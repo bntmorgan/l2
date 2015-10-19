@@ -24,6 +24,7 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 #include "scene.h"
 #include "keys.h"
 #include "textures.h"
+#include "gamepad.h"
 
 OGLDEV_KEY GLUTKeyToOGLDEVKey(uint Key)
 {
@@ -81,13 +82,65 @@ OGLDEV_KEY GLUTKeyToOGLDEVKey(uint Key)
 }
 
 Scene *s;
+Gamepad *g;
 
 static void RenderSceneCB(void) {
+//  g->Update();
+//  int event = g->event();
+//  g->Clear();
+//  if (event == JS_EVENT_AXIS) {
+//    // g->Dump();
+//    s->OnJoystickAxis(g->l(), g->r());
+//  }
   s->Render();
 }
 
+// XXX no globals
+static float kb_h;
+static float kb_v;
+
 static void SpecialKeyboardCB(int Key, int x, int y) {
-  s->OnKeyboard(GLUTKeyToOGLDEVKey(Key));
+  switch (Key) {
+    case OGLDEV_KEY_LEFT:
+      kb_h = -GAMEPAD_AXIS_MAX;
+      break;
+    case OGLDEV_KEY_RIGHT:
+      kb_h = GAMEPAD_AXIS_MAX;
+      break;
+    case OGLDEV_KEY_UP:
+      kb_v = GAMEPAD_AXIS_MAX;
+      break;
+    case OGLDEV_KEY_DOWN:
+      kb_v = -GAMEPAD_AXIS_MAX;
+      break;
+    default:
+      ;
+  }
+  Vector2f l(kb_h, kb_v);
+  Vector2f r(0., 0.);
+  s->OnJoystickAxis(l, r);
+}
+
+static void SpecialKeyboardUpCB(int Key, int x, int y) {
+  switch (Key) {
+    case OGLDEV_KEY_LEFT:
+      kb_h = 0.;
+      break;
+    case OGLDEV_KEY_RIGHT:
+      kb_h = 0.;
+      break;
+    case OGLDEV_KEY_UP:
+      kb_v = 0.;
+      break;
+    case OGLDEV_KEY_DOWN:
+      kb_v = 0.;
+      break;
+    default:
+      ;
+  }
+  Vector2f l(kb_h, kb_v);
+  Vector2f r(0., 0.);
+  s->OnJoystickAxis(l, r);
 }
 
 static void KeyboardCB(unsigned char Key, int x, int y) {
@@ -120,9 +173,10 @@ int main(int argc, char *argv[]) {
   glutDisplayFunc(RenderSceneCB);
   glutIdleFunc(RenderSceneCB);
   glutSpecialFunc(SpecialKeyboardCB);
+  glutSpecialUpFunc(SpecialKeyboardUpCB);
   glutKeyboardFunc(KeyboardCB);
   glutReshapeFunc(ReshapeCB);
-  // glutPassiveMotionFunc(PassiveMouseCB);
+  glutPassiveMotionFunc(PassiveMouseCB);
 
   // Antialiasing
   // glEnable(GL_MULTISAMPLE);
@@ -146,6 +200,9 @@ int main(int argc, char *argv[]) {
     fprintf(stderr, "Error: '%s'\n", glewGetErrorString(res));
     return 1;
   }
+
+  // Gamepad object
+  // g = new Gamepad("/dev/input/js1");
 
   // Create a test scene
   s = Scene::CreateTestScene();

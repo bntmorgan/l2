@@ -24,12 +24,9 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 #include <GL/freeglut.h>
 #include <stdio.h>
 
-#include "scene.h"
 #include "texture.h"
 
 #include "math_3d.h"
-
-class Scene;
 
 struct Vertex {
     Vector3f m_pos;

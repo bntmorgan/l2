@@ -27,42 +27,31 @@ class Camera
 public:
 
     Camera(int WindowWidth, int WindowHeight);
-
-    Camera(int WindowWidth, int WindowHeight, const Vector3f& Pos, const Vector3f& Target, const Vector3f& Up);
-
+    Camera(int WindowWidth, int WindowHeight, const Vector3f& Pos, const
+        Vector3f& Target, const Vector3f& Up);
     bool OnKeyboard(OGLDEV_KEY Key);
-
     void OnMouse(int x, int y);
-
     void OnRender();
-
-    const Vector3f& GetPos() const
-    {
-        return m_pos;
+    void OnJoystick(Vector2f l, Vector2f r);
+    void SetWindow(int WindowWidth, int WindowHeight);
+    const Vector3f& GetPos() const {
+      return m_pos;
     }
-
-    const Vector3f& GetTarget() const
-    {
-        return m_target;
+    const Vector3f& GetTarget() const {
+      return m_target;
     }
-
-    const Vector3f& GetUp() const
-    {
-        return m_up;
+    const Vector3f& GetUp() const {
+      return m_up;
     }
-
     void SetPos(const Vector3f& pos) {
       m_pos = pos;
     }
-
     void SetTarget(const Vector3f& target) {
       m_target = target;
     }
-
     void SetUp(const Vector3f& up) {
       m_up = up;
     }
-
 private:
 
     void Init();
@@ -84,6 +73,12 @@ private:
     bool m_OnRightEdge;
 
     Vector2i m_mousePos;
+
+    // Rotation speeds
+    float m_rh;
+    float m_rv;
+    // Position speeds
+    Vector3f m_pm;
 };
 
 #endif	/* CAMERA_H */

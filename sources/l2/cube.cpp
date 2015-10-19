@@ -72,7 +72,7 @@ void Cube::Render() {
 
   glBindBuffer(GL_ARRAY_BUFFER, Cube::vbo_);
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
       (const GLvoid*)sizeof(Vector3f));
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo_);
   // Sides

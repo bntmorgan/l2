@@ -20,20 +20,25 @@
 #include "keys.h"
 
 const static float STEP_SCALE = 1.0f;
-const static float EDGE_STEP = 1.0f;
+// const static float EDGE_STEP = 1.0f;
 const static int MARGIN = 10;
 
 Camera::Camera(int WindowWidth, int WindowHeight) {
   m_windowWidth  = WindowWidth;
   m_windowHeight = WindowHeight;
   m_pos          = Vector3f(0.0f, 0.0f, 0.0f);
-  m_target       = Vector3f(-0.45f, -0.66f, 1.0f);
+  m_target       = Vector3f(0.f, 0.f, 1.0f);
+  // m_target       = Vector3f(-0.484841, -0.500066, 0.717540);
   m_target.Normalize();
   m_up           = Vector3f(0.0f, 1.0f, 0.0f);
+  // Rotations au montion
+  m_rh = 0;
+  m_rv = 0;
+  // Position speeds
+  m_pm = Vector3f(0.f, 0.f, 0.f);
 
   Init();
 }
-
 
 Camera::Camera(int WindowWidth, int WindowHeight, const Vector3f& Pos, const
     Vector3f& Target, const Vector3f& Up) {
@@ -49,7 +54,6 @@ Camera::Camera(int WindowWidth, int WindowHeight, const Vector3f& Pos, const
 
   Init();
 }
-
 
 void Camera::Init() {
   Vector3f HTarget(m_target.x, 0.0, m_target.z);
@@ -81,6 +85,11 @@ void Camera::Init() {
   // glutWarpPointer(m_mousePos.x, m_mousePos.y);
 }
 
+
+void Camera::SetWindow(int WindowWidth, int WindowHeight) {
+  m_windowWidth  = WindowWidth;
+  m_windowHeight = WindowHeight;
+}
 
 bool Camera::OnKeyboard(OGLDEV_KEY Key) {
   bool Ret = false;
@@ -163,44 +172,48 @@ void Camera::OnMouse(int x, int y) {
 
 
 void Camera::OnRender() {
-  bool ShouldUpdate = false;
+// bool ShouldUpdate = false;
 
-  if (m_OnLeftEdge) {
-    m_AngleH -= EDGE_STEP;
-    ShouldUpdate = true;
-  } else if (m_OnRightEdge) {
-    m_AngleH += EDGE_STEP;
-    ShouldUpdate = true;
-  }
-
-  if (m_OnUpperEdge) {
-    if (m_AngleV > -90.0f) {
-      m_AngleV -= EDGE_STEP;
-      ShouldUpdate = true;
-    }
-  } else if (m_OnLowerEdge) {
-    if (m_AngleV < 90.0f) {
-      m_AngleV += EDGE_STEP;
-      ShouldUpdate = true;
-    }
-  }
-
-  if (ShouldUpdate) {
+//  if (m_OnLeftEdge) {
+//    m_AngleH -= EDGE_STEP;
+//    ShouldUpdate = true;
+//  } else if (m_OnRightEdge) {
+//    m_AngleH += EDGE_STEP;
+//    ShouldUpdate = true;
+//  }
+//
+//  if (m_OnUpperEdge) {
+//    if (m_AngleV > -90.0f) {
+//      m_AngleV -= EDGE_STEP;
+//      ShouldUpdate = true;
+//    }
+//  } else if (m_OnLowerEdge) {
+//    if (m_AngleV < 90.0f) {
+//      m_AngleV += EDGE_STEP;
+//      ShouldUpdate = true;
+//    }
+//  }
+//
+//  if (ShouldUpdate) {
     Update();
-  }
+//  }
 }
 
 void Camera::Update() {
   const Vector3f Vaxis(0.0f, 1.0f, 0.0f);
 
   // Rotate the view vector by the horizontal angle around the vertical axis
-  Vector3f View(1.0f, 0.0f, 0.0f);
+  Vector3f View(1.5f, 0.0f, 0.0f);
+  // Add the current Joystick value to Angle
+  m_AngleH += 1.5 * m_rh;
   View.Rotate(m_AngleH, Vaxis);
   View.Normalize();
 
   // Rotate the view vector by the vertical angle around the horizontal axis
   Vector3f Haxis = Vaxis.Cross(View);
   Haxis.Normalize();
+  // Add the current Joystick value to Angle
+  m_AngleV += 1.5 * m_rv;
   View.Rotate(m_AngleV, Haxis);
 
   m_target = View;
@@ -208,4 +221,21 @@ void Camera::Update() {
 
   m_up = m_target.Cross(Haxis);
   m_up.Normalize();
+
+  // Position move
+  Vector3f pm = m_pm;
+  // printf("pos (%f, %f, %f)\n", m_pos.x, m_pos.y, m_pos.z);
+  // XXX ? WTF
+  pm.Rotate(m_AngleH + 90, Vaxis);
+  m_pos.x += pm.x / 10;
+  m_pos.z += pm.z / 10;
+}
+
+void Camera::OnJoystick(Vector2f l, Vector2f r) {
+  m_rh = r.x;
+  m_rv = r.y;
+  m_pm.x = -l.x;
+  m_pm.y = 1.;
+  m_pm.z = l.y;
+  // printf("l(%f, %f), r(%f, %f)\n", l.x, l.y, r.x, r.y);
 }

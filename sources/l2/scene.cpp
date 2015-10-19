@@ -27,6 +27,7 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 #include <assert.h>
 #include <GL/glew.h>
 #include <GL/freeglut.h>
+#include <math.h>
 
 const char* pVSFileName = "sources/l2/shader.vs";
 const char* pFSFileName = "sources/l2/shader.fs";
@@ -196,11 +197,14 @@ Scene *Scene::CreateTestScene(void) {
   s->AddCube(new Cube( 3, -1,  2, ts->texture("WOOD_SIDE"), ts->texture("WOOD_TOP")));
 
   // Perspective
-  s->g_pers_proj_info()->FOV = 30.0f;
+  s->g_pers_proj_info()->FOV = 0.0f;
   s->g_pers_proj_info()->Height = CUBE_HEIGHT;
   s->g_pers_proj_info()->Width = CUBE_WIDTH;
   s->g_pers_proj_info()->zNear = -100.0f;
   s->g_pers_proj_info()->zFar = 100.0f;
+
+  // Player
+  s->player_ = new Player(0,  1,  0, ts->texture("ROCK_TOP"));
 
   return s;
 }
@@ -215,7 +219,7 @@ void Scene::OnKeyboard(int key) {
 void Scene::OnReshape(int width, int height) {
   g_pers_proj_info()->Width = CUBE_WIDTH * ((float)WINDOW_WIDTH / width);
   g_pers_proj_info()->Height = (g_pers_proj_info()->Width / ((float)width / height));
-  camera_ = Camera(width, height);
+  camera_.SetWindow(width, height);
 }
 
 void Scene::OnMouse(int x, int y) {
@@ -231,14 +235,11 @@ void Scene::Render(void) {
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  static float scale = 0.0f;
-  static float scale2 = 0.0f;
-  static float scale3 = 0.0f;
-
+  camera_.OnRender();
   for (i = 0; i < cubes_.size(); i++) {
 		p_.WorldPos(1.0f * cubes_[i]->x(), 1.0f * cubes_[i]->y(),
         1.0f * cubes_[i]->z());
-    p_.Rotate(360 * scale2, 360 * scale, 0.0f);
+    p_.Rotate(0.f, 0.f, 0.0f);
     p_.SetCamera(camera_);
     p_.SetPerspectiveProj(g_pers_proj_info_);
     glUniformMatrix4fv(g_world_location_, 1, GL_TRUE,
@@ -246,20 +247,15 @@ void Scene::Render(void) {
     cubes_[i]->Render();
   }
 
-  // scale += 0.002f;
-  if (scale >= 1.f) {
-    scale = 0.f;
-  }
-
-  // scale2 += 0.003f;
-  if (scale2 >= 1.f) {
-    scale2 = 0.f;
-  }
-
-  // scale3 += 0.002f;
-  if (scale3 >= 1.f) {
-    scale3 = 0.f;
-  }
+  // XXX Draw player
+  p_.WorldPos(1.0f * player_->rx(), 1.0f * player_->ry(),
+      1.0f * player_->rz());
+  p_.Rotate(0.f, (player_->f() * 180) / M_PI, 0.0f);
+  p_.SetCamera(camera_);
+  p_.SetPerspectiveProj(g_pers_proj_info_);
+  glUniformMatrix4fv(g_world_location_, 1, GL_TRUE,
+      (const GLfloat*)p_.GetWVOrthoPTrans());
+  player_->Render();
 
   glutSwapBuffers();
 }
@@ -269,4 +265,11 @@ void Scene::Dump(void) {
   for (i = 0; i < cubes_.size(); i++) {
     cubes_[i]->Dump();
   }
+}
+
+void Scene::OnJoystickAxis(Vector2f l, Vector2f r) {
+  l_ = l;
+  r_ = r;
+  camera_.OnJoystick(l_, r_);
+  player_->OnJoystick(l_, r_);
 }

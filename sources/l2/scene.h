@@ -25,6 +25,7 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 #include <GL/freeglut.h>
 
 #include "cube.h"
+#include "player.h"
 #include "pipeline.h"
 #include "math_3d.h"
 #include "camera.h"
@@ -48,6 +49,11 @@ class Scene {
   Pipeline p_;
   PersProjInfo g_pers_proj_info_;
   Camera camera_;
+  // Joystick
+  Vector2f l_;
+  Vector2f r_;
+  // Player
+  Player *player_;
  public:
   Scene(void);
   ~Scene(void);
@@ -61,6 +67,7 @@ class Scene {
   void OnKeyboard(int key);
   void OnMouse(int x, int y);
   void OnReshape(int x, int y);
+  void OnJoystickAxis(Vector2f l, Vector2f r);
   // Accessors
   GLuint g_world_location(void) { return g_world_location_; }
   PersProjInfo *g_pers_proj_info(void) { return &g_pers_proj_info_; }
