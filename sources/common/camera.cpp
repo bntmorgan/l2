@@ -26,7 +26,7 @@ const static int MARGIN = 10;
 Camera::Camera(int WindowWidth, int WindowHeight) {
   m_windowWidth  = WindowWidth;
   m_windowHeight = WindowHeight;
-  m_pos          = Vector3f(0.0f, 0.0f, 0.0f);
+  m_pos          = Vector3f(0.0f, 1.0f, 0.0f);
   m_target       = Vector3f(0.f, 0.f, 1.0f);
   // m_target       = Vector3f(-0.484841, -0.500066, 0.717540);
   m_target.Normalize();
@@ -38,6 +38,9 @@ Camera::Camera(int WindowWidth, int WindowHeight) {
   m_pm = Vector3f(0.f, 0.f, 0.f);
 
   Init();
+
+  m_AngleH = 45 + 180;
+  m_AngleV = 30.;
 }
 
 Camera::Camera(int WindowWidth, int WindowHeight, const Vector3f& Pos, const

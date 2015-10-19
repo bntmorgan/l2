@@ -75,6 +75,9 @@ class Scene {
   void set_textures(Textures *textures) {
     textures_ = textures;
   }
+  Textures *textures(void) {
+    return textures_;
+  }
 };
 
 #endif//__SCENE_H__

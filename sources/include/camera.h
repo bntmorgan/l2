@@ -43,15 +43,7 @@ public:
     const Vector3f& GetUp() const {
       return m_up;
     }
-    void SetPos(const Vector3f& pos) {
-      m_pos = pos;
-    }
-    void SetTarget(const Vector3f& target) {
-      m_target = target;
-    }
-    void SetUp(const Vector3f& up) {
-      m_up = up;
-    }
+    float GetAngleH(void) { return m_AngleH; }
 private:
 
     void Init();

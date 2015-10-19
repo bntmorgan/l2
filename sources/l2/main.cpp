@@ -95,50 +95,71 @@ static void RenderSceneCB(void) {
   s->Render();
 }
 
+#define ABS(x) ((x < 0) ? -x : x)
+
+#define KEYBOARD_ONE_NORM 0.7071067811865476f
+
+static void norm_to_one(Vector2f *v) {
+  if (ABS(v->x) == 1.0f && ABS(v->y) == 1.0f) {
+    v->x = KEYBOARD_ONE_NORM * v->x;
+    v->y = KEYBOARD_ONE_NORM * v->y;
+  } else if (v->x == 0.f && ABS(v->y) == KEYBOARD_ONE_NORM) {
+    v->y /= v->y;
+  } else if (v->y == 0.f && ABS(v->x) == KEYBOARD_ONE_NORM) {
+    v->x /= v->x;
+  }
+}
+
 // XXX no globals
-static float kb_h;
-static float kb_v;
+static float kb_h = 0.f;
+static float kb_v = 0.f;
 
 static void SpecialKeyboardCB(int Key, int x, int y) {
-  switch (Key) {
+  switch (GLUTKeyToOGLDEVKey(Key)) {
     case OGLDEV_KEY_LEFT:
-      kb_h = -GAMEPAD_AXIS_MAX;
+      kb_h = 1.f;
       break;
     case OGLDEV_KEY_RIGHT:
-      kb_h = GAMEPAD_AXIS_MAX;
+      kb_h = -1.f;
       break;
     case OGLDEV_KEY_UP:
-      kb_v = GAMEPAD_AXIS_MAX;
+      kb_v = 1.f;
       break;
     case OGLDEV_KEY_DOWN:
-      kb_v = -GAMEPAD_AXIS_MAX;
+      kb_v = -1.f;
       break;
     default:
       ;
   }
   Vector2f l(kb_h, kb_v);
+  printf("l(%f, %f)\n", l.x, l.y);
+  norm_to_one(&l);
+  printf("l(%f, %f)\n", l.x, l.y);
   Vector2f r(0., 0.);
   s->OnJoystickAxis(l, r);
 }
 
 static void SpecialKeyboardUpCB(int Key, int x, int y) {
-  switch (Key) {
+  switch (GLUTKeyToOGLDEVKey(Key)) {
     case OGLDEV_KEY_LEFT:
-      kb_h = 0.;
+      kb_h = 0.f;
       break;
     case OGLDEV_KEY_RIGHT:
-      kb_h = 0.;
+      kb_h = 0.f;
       break;
     case OGLDEV_KEY_UP:
-      kb_v = 0.;
+      kb_v = 0.f;
       break;
     case OGLDEV_KEY_DOWN:
-      kb_v = 0.;
+      kb_v = 0.f;
       break;
     default:
       ;
   }
   Vector2f l(kb_h, kb_v);
+  printf("l(%f, %f)\n", l.x, l.y);
+  norm_to_one(&l);
+  printf("l(%f, %f)\n", l.x, l.y);
   Vector2f r(0., 0.);
   s->OnJoystickAxis(l, r);
 }

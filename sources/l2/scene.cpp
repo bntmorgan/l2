@@ -33,6 +33,10 @@ const char* pVSFileName = "sources/l2/shader.vs";
 const char* pFSFileName = "sources/l2/shader.fs";
 
 Scene::Scene(void) : camera_(Camera(WINDOW_WIDTH, WINDOW_HEIGHT)) {
+  // Textures
+  textures_ = new Textures;
+  // Player
+  player_ = new Player(0,  1,  0, textures_->texture("PLAYER"), &camera_);
   Cube::InitGL();
 }
 
@@ -151,12 +155,10 @@ void Scene::CompileShaders() {
 Scene *Scene::CreateTestScene(void) {
   Scene *s = new Scene;
 
-  // Textures
-  Textures *ts = new Textures;
-  s->set_textures(ts);
-
   // Shaders
   s->CompileShaders();
+
+  Textures *ts = s->textures();
 
   // Create test cubes
   s->AddCube(new Cube(-1,  0,  0, ts->texture("ROCK_TOP")));
@@ -203,9 +205,6 @@ Scene *Scene::CreateTestScene(void) {
   s->g_pers_proj_info()->zNear = -100.0f;
   s->g_pers_proj_info()->zFar = 100.0f;
 
-  // Player
-  s->player_ = new Player(0,  1,  0, ts->texture("ROCK_TOP"));
-
   return s;
 }
 
@@ -236,6 +235,7 @@ void Scene::Render(void) {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   camera_.OnRender();
+  player_->Update();
   for (i = 0; i < cubes_.size(); i++) {
 		p_.WorldPos(1.0f * cubes_[i]->x(), 1.0f * cubes_[i]->y(),
         1.0f * cubes_[i]->z());
@@ -250,7 +250,7 @@ void Scene::Render(void) {
   // XXX Draw player
   p_.WorldPos(1.0f * player_->rx(), 1.0f * player_->ry(),
       1.0f * player_->rz());
-  p_.Rotate(0.f, (player_->f() * 180) / M_PI, 0.0f);
+  p_.Rotate(0.f, player_->f(), 0.0f);
   p_.SetCamera(camera_);
   p_.SetPerspectiveProj(g_pers_proj_info_);
   glUniformMatrix4fv(g_world_location_, 1, GL_TRUE,
