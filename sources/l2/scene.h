@@ -34,7 +34,7 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 720
 
-#define CUBE_WIDTH 10
+#define CUBE_WIDTH 20
 #define CUBE_HEIGHT ((CUBE_WIDTH) / ((float)WINDOW_WIDTH / WINDOW_HEIGHT))
 
 class Cube;

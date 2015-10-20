@@ -85,13 +85,13 @@ Scene *s;
 Gamepad *g;
 
 static void RenderSceneCB(void) {
-//  g->Update();
-//  int event = g->event();
-//  g->Clear();
-//  if (event == JS_EVENT_AXIS) {
-//    // g->Dump();
-//    s->OnJoystickAxis(g->l(), g->r());
-//  }
+  g->Update();
+  int event = g->event();
+  g->Clear();
+  if (event == JS_EVENT_AXIS) {
+    // g->Dump();
+    s->OnJoystickAxis(g->l(), g->r());
+  }
   s->Render();
 }
 
@@ -223,7 +223,7 @@ int main(int argc, char *argv[]) {
   }
 
   // Gamepad object
-  // g = new Gamepad("/dev/input/js1");
+  g = new Gamepad("/dev/input/js1");
 
   // Create a test scene
   s = Scene::CreateTestScene();

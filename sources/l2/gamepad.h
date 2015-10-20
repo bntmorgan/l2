@@ -27,7 +27,7 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 #include "math_3d.h"
 
 #define GAMEPAD_AXIS_MAX 32767.0
-#define GAMEPAD_AXIS_DEAD_ZONE 6000
+#define GAMEPAD_AXIS_DEAD_ZONE 5000
 
 enum gamepad_button {
   GAMEPAD_BUTTON_A,
@@ -58,7 +58,9 @@ class Gamepad {
   private:
     // Axis
     Vector2f l_;
+    Vector2f lr_;
     Vector2f r_;
+    Vector2f rr_;
     float lt_;
     float rt_;
     Vector2f cross_;
@@ -81,6 +83,7 @@ class Gamepad {
     // Functions
     void HandleButton(void);
     void HandleAxis(void);
+    void AdjustAxis(void);
   public:
     Gamepad(std::string f);
     ~Gamepad(void);

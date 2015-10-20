@@ -2,13 +2,15 @@
 #include "player.h"
 
 void Player::OnJoystick(Vector2f l, Vector2f r) {
-  Vector2f orig(0.f, 1.f);
-  float angle = atan2(orig.y,orig.x) - atan2(l.y,l.x);
-  angle = (angle >= 0) ? angle : angle + (2 * M_PI);
-  angle = (angle / (2*M_PI)) * 360;
-  printf("Joystick absolute angle (%f)\n", angle);
-  printf("Camera angle (%f)\n", camera_->GetAngleH());
-  f_ = angle - camera_->GetAngleH() - 90;
+  if (l.x != 0.f || l.y != 0.f) {
+    Vector2f orig(0.f, 1.f);
+    float angle = atan2(orig.y,orig.x) - atan2(l.y,l.x);
+    angle = (angle >= 0) ? angle : angle + (2 * M_PI);
+    angle = (angle / (2*M_PI)) * 360;
+    // printf("Joystick absolute angle (%f)\n", angle);
+    // printf("Camera angle (%f)\n", camera_->GetAngleH());
+    f_ = angle - camera_->GetAngleH() - 90;
+  }
   // Moving speed
   m_pm.x = -l.x;
   m_pm.y = 1.;

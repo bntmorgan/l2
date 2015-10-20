@@ -82,39 +82,60 @@ void Gamepad::HandleButton(void) {
   }
 }
 
+#define DEAD(x) \
+  ((x) < GAMEPAD_AXIS_DEAD_ZONE && (x) > -GAMEPAD_AXIS_DEAD_ZONE)
+
+#define ZERO_IF_DEAD(x) \
+    ((DEAD(x)) ? \
+    x / GAMEPAD_AXIS_MAX : \
+    0.)
+
+// Joysticks deadzones work by pair
+void Gamepad::AdjustAxis(void) {
+  if (DEAD(lr_.x) && DEAD(lr_.y)) {
+    l_.x = 0.;
+    l_.y = 0.;
+  } else {
+    l_.x = lr_.x / GAMEPAD_AXIS_MAX;
+    l_.y = lr_.y / GAMEPAD_AXIS_MAX;
+  }
+  if (DEAD(rr_.x) && DEAD(rr_.y)) {
+    r_.x = 0.;
+    r_.y = 0.;
+  } else {
+    r_.x = rr_.x / GAMEPAD_AXIS_MAX;
+    r_.y = rr_.y / GAMEPAD_AXIS_MAX;
+  }
+}
+
 void Gamepad::HandleAxis(void) {
   float v = 0., lv = 0.;
-  if (e_.value > GAMEPAD_AXIS_DEAD_ZONE || e_.value < -GAMEPAD_AXIS_DEAD_ZONE) {
-    v = e_.value / GAMEPAD_AXIS_MAX;
-  } else {
-    v = 0.;
-  }
   // Reverse the value, up is positive !!
-  v *= -1;
+  v = e_.value * -1;
   switch (e_.number) {
     case GAMEPAD_AXIS_L_X:
-      l_.x  = v;
+      lr_.x  = v;
       break;
     case GAMEPAD_AXIS_L_Y:
-      l_.y  = v;
+      lr_.y  = v;
       break;
     case GAMEPAD_AXIS_LT:
-      lt_  = v;
+      lt_  = ZERO_IF_DEAD(v);
       break;
     case GAMEPAD_AXIS_R_X:
-      r_.x  = v;
+      rr_.x = v;
       break;
     case GAMEPAD_AXIS_R_Y:
-      r_.y  = v;
+      rr_.y = v;
       break;
     case GAMEPAD_AXIS_RT:
-      rt_  = v;
+      rt_  = ZERO_IF_DEAD(v);
       break;
     case GAMEPAD_AXIS_CROSS_X:
-      cross_.x  = v;
+      cross_.x  = ZERO_IF_DEAD(v);
       break;
     case GAMEPAD_AXIS_CROSS_Y:
-      cross_.y  = v;
+      cross_.y  = ZERO_IF_DEAD(v);
       break;
     default:
       printf("unknown axis number %d\n", e_.number);
@@ -152,6 +173,8 @@ void Gamepad::Update(void) {
       }
     }
   }
+  // Adjust Axis
+  AdjustAxis();
 }
 
 void Gamepad::Clear(void) {
