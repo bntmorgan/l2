@@ -63,6 +63,7 @@ class Scene {
       GLenum ShaderType);
   void AddCube(Cube *c);
   void Render(void);
+  void Physics(void);
   void Dump(void);
   void OnKeyboard(int key);
   void OnMouse(int x, int y);

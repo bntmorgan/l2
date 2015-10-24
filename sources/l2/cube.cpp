@@ -62,10 +62,6 @@ unsigned int Cube::indices_[] = {
 GLuint Cube::vbo_;
 GLuint Cube::ibo_;
 
-void Cube::Dump(void) {
-  printf("x(%d), y(%d), z(%d)\n", x(), y(), z());
-}
-
 void Cube::Render() {
   glEnableVertexAttribArray(0);
   glEnableVertexAttribArray(1);

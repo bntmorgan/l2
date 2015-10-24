@@ -92,6 +92,7 @@ static void RenderSceneCB(void) {
     // g->Dump();
     s->OnJoystickAxis(g->l(), g->r());
   }
+  s->Physics();
   s->Render();
 }
 
@@ -132,9 +133,7 @@ static void SpecialKeyboardCB(int Key, int x, int y) {
       ;
   }
   Vector2f l(kb_h, kb_v);
-  printf("l(%f, %f)\n", l.x, l.y);
   norm_to_one(&l);
-  printf("l(%f, %f)\n", l.x, l.y);
   Vector2f r(0., 0.);
   s->OnJoystickAxis(l, r);
 }
@@ -157,9 +156,7 @@ static void SpecialKeyboardUpCB(int Key, int x, int y) {
       ;
   }
   Vector2f l(kb_h, kb_v);
-  printf("l(%f, %f)\n", l.x, l.y);
   norm_to_one(&l);
-  printf("l(%f, %f)\n", l.x, l.y);
   Vector2f r(0., 0.);
   s->OnJoystickAxis(l, r);
 }

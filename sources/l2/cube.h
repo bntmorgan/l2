@@ -25,6 +25,8 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdio.h>
 
 #include "texture.h"
+#include "graphic.h"
+#include "physic.h"
 
 #include "math_3d.h"
 
@@ -40,14 +42,10 @@ struct Vertex {
     }
 };
 
-class Cube {
+class Cube : public Graphic, public Physic {
  private:
-  // Pointers
-  // Scene *s_;
-  // Coordinates
-  int x_;
-  int y_;
-  int z_;
+  // Collided with player
+  bool collided_;
   // Textures
   Texture *t_side_;
   Texture *t_top_;
@@ -58,33 +56,21 @@ class Cube {
   static GLuint vbo_;
   static GLuint ibo_;
  public:
-  Cube(int x, int y, int z, Texture *t) : x_(x), y_(y), z_(z), t_side_(t),
-      t_top_(t), t_bottom_(t) {};
-  Cube(int x, int y, int z, Texture *t_side, Texture *t_top_bottom) : x_(x),
-      y_(y), z_(z), t_side_(t_side), t_top_(t_top_bottom),
-      t_bottom_(t_top_bottom) {};
-  Cube(int x, int y, int z, Texture *t_side, Texture *t_top, Texture *t_bottom)
-      : x_(x), y_(y), z_(z), t_side_(t_side), t_top_(t_top),
-      t_bottom_(t_bottom) {};
+  Cube(float x, float y, float z, Texture *t) : Physic (x, y, z),
+      collided_(false), t_side_(t), t_top_(t), t_bottom_(t) { };
+  Cube(float x, float y, float z, Texture *t_side, Texture *t_top_bottom) :
+      Physic (x, y, z), collided_(false), t_side_(t_side),
+      t_top_(t_top_bottom), t_bottom_(t_top_bottom) { };
+  Cube(float x, float y, float z, Texture *t_side, Texture *t_top,
+      Texture *t_bottom) : Physic (x, y, z), collided_(false),
+      t_side_(t_side), t_top_(t_top), t_bottom_(t_bottom) { };
   ~Cube() { DestroyGL(); };
-
   static void InitGL(void);
-
   static void DestroyGL(void);
-
-  void Dump(void);
-
   void Render();
-
-  inline int x() {
-    return x_;
-  }
-  inline int y() {
-    return y_;
-  }
-  inline int z() {
-    return z_;
-  }
+  // Accessors
+  void set_collided(bool collided) { collided_ = collided; };
+  bool collided(void) { return collided_; };
 };
 
 #endif//__CUBE_H__

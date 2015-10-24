@@ -180,7 +180,7 @@ Scene *Scene::CreateTestScene(void) {
   s->AddCube(new Cube(-3,  0, -1, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
   s->AddCube(new Cube( 0,  0, -1, ts->texture("ROCK_TOP")));
   s->AddCube(new Cube( 1,  0, -1, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
-  s->AddCube(new Cube( 2,  0, -1, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
+  s->AddCube(new Cube( 2,  1, -1, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
   s->AddCube(new Cube( 3,  0, -1, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
   s->AddCube(new Cube(-1,  0, -2, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
   s->AddCube(new Cube(-2,  0, -2, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
@@ -194,7 +194,7 @@ Scene *Scene::CreateTestScene(void) {
   s->AddCube(new Cube(-3,  0,  2, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
   s->AddCube(new Cube( 0,  0,  2, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
   s->AddCube(new Cube( 1,  0,  2, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
-  s->AddCube(new Cube( 2,  0,  2, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
+  s->AddCube(new Cube( 2,  1,  2, ts->texture("ROCKS")));
   s->AddCube(new Cube( 3,  0,  2, ts->texture("WATER_TOP")));
   s->AddCube(new Cube( 3, -1,  2, ts->texture("WOOD_SIDE"), ts->texture("WOOD_TOP")));
 
@@ -204,6 +204,8 @@ Scene *Scene::CreateTestScene(void) {
   s->g_pers_proj_info()->Width = CUBE_WIDTH;
   s->g_pers_proj_info()->zNear = -100.0f;
   s->g_pers_proj_info()->zFar = 100.0f;
+
+  // s->Dump();
 
   return s;
 }
@@ -229,6 +231,13 @@ void Scene::AddCube(Cube *c) {
   cubes_.push_back(c);
 }
 
+void Scene::Physics(void) {
+  unsigned int i;
+  for (i = 0; i < cubes_.size(); i++) {
+    cubes_[i]->set_collided(cubes_[i]->Collide(player_));
+  }
+}
+
 void Scene::Render(void) {
   unsigned int i;
 
@@ -239,6 +248,11 @@ void Scene::Render(void) {
   for (i = 0; i < cubes_.size(); i++) {
 		p_.WorldPos(1.0f * cubes_[i]->x(), 1.0f * cubes_[i]->y(),
         1.0f * cubes_[i]->z());
+    if (cubes_[i]->collided()) {
+      p_.Scale(1.f, 2.f, 1.f);
+    } else {
+      p_.Scale(1.f, 1.f, 1.f);
+    }
     p_.Rotate(0.f, 0.f, 0.0f);
     p_.SetCamera(camera_);
     p_.SetPerspectiveProj(g_pers_proj_info_);
@@ -248,9 +262,10 @@ void Scene::Render(void) {
   }
 
   // XXX Draw player
-  p_.WorldPos(1.0f * player_->rx(), 1.0f * player_->ry(),
-      1.0f * player_->rz());
+  p_.WorldPos(1.0f * player_->x(), 1.0f * player_->y(),
+      1.0f * player_->z());
   p_.Rotate(0.f, player_->f(), 0.0f);
+  p_.Scale(1.f, 1.f, 1.f);
   p_.SetCamera(camera_);
   p_.SetPerspectiveProj(g_pers_proj_info_);
   glUniformMatrix4fv(g_world_location_, 1, GL_TRUE,

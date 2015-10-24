@@ -17,27 +17,23 @@ You should have received a copy of the GNU General Public License
 along with L2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __PLAYER_H__
-#define __PLAYER_H__
+#ifndef __OBJECT_H__
+#define __OBJECT_H__
 
-#include "cube.h"
-#include "texture.h"
-#include "camera.h"
-
-class Player: public Cube {
+class Object {
  private:
-   // Facing
-   float f_;
-   // Camera
-   Camera *camera_;
-   // Moving speed
-   Vector3f m_pm;
+ protected:
+  float x_;
+  float y_;
+  float z_;
  public:
-  Player(float x, float y, float z, Texture *t, Camera *c) : Cube(x, y, z, t),
-      f_(0), camera_(c), m_pm(0, 0, 0) { };
-  void OnJoystick(Vector2f l, Vector2f r);
-  void Update(void);
-  float f(void) { return f_; }
+  Object(float x, float y, float z) : x_(x), y_(y), z_(z) { };
+  float x() { return x_; }
+  float y() { return y_; }
+  float z() { return z_; }
+  void Dump(void) {
+    printf("x(%f), y(%f), z(%f)\n", x(), y(), z());
+  }
 };
 
-#endif//__PLAYER_H__
+#endif//__OBJECT_H__
