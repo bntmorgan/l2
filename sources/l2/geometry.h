@@ -17,23 +17,34 @@ You should have received a copy of the GNU General Public License
 along with L2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __OBJECT_H__
-#define __OBJECT_H__
+#ifndef __GEOMETRY_H__
+#define __GEOMETRY_H__
 
-class Object {
+#include <stdio.h>
+
+enum Axis {
+  AXIS_X,
+  AXIS_Y,
+  AXIS_Z
+};
+
+class Geometry {
  private:
  protected:
   float x_;
   float y_;
   float z_;
  public:
-  Object(float x, float y, float z) : x_(x), y_(y), z_(z) { };
+  Geometry (float x, float y, float z) : x_(x), y_(y), z_(z) { };
   float x() { return x_; }
   float y() { return y_; }
   float z() { return z_; }
+  void set_x(float x) { x_ = x; }
+  void set_y(float y) { y_ = y; }
+  void set_z(float z) { z_ = z; }
   void Dump(void) {
     printf("x(%f), y(%f), z(%f)\n", x(), y(), z());
   }
 };
 
-#endif//__OBJECT_H__
+#endif//__GEOMETRY_H__

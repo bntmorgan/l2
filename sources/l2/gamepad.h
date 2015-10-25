@@ -27,7 +27,7 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 #include "math_3d.h"
 
 #define GAMEPAD_AXIS_MAX 32767.0
-#define GAMEPAD_AXIS_DEAD_ZONE 5000
+#define GAMEPAD_AXIS_DEAD_ZONE 6000
 
 enum gamepad_button {
   GAMEPAD_BUTTON_A,

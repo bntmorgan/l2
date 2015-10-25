@@ -30,6 +30,7 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 #include "math_3d.h"
 #include "camera.h"
 #include "textures.h"
+#include "aabbtree.h"
 
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 720
@@ -69,6 +70,7 @@ class Scene {
   void OnMouse(int x, int y);
   void OnReshape(int x, int y);
   void OnJoystickAxis(Vector2f l, Vector2f r);
+  void CreateAABBTree(void);
   // Accessors
   GLuint g_world_location(void) { return g_world_location_; }
   PersProjInfo *g_pers_proj_info(void) { return &g_pers_proj_info_; }

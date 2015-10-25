@@ -32,6 +32,11 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 const char* pVSFileName = "sources/l2/shader.vs";
 const char* pFSFileName = "sources/l2/shader.fs";
 
+void Scene::CreateAABBTree(void) {
+  std::vector<Rect *> rects(cubes_.begin(), cubes_.end());
+  AABBTree t(rects);
+}
+
 Scene::Scene(void) : camera_(Camera(WINDOW_WIDTH, WINDOW_HEIGHT)) {
   // Textures
   textures_ = new Textures;
@@ -160,6 +165,15 @@ Scene *Scene::CreateTestScene(void) {
 
   Textures *ts = s->textures();
 
+  s->AddCube(new Cube(0, -1,  0, ts->texture("ROCK_TOP")));
+  s->AddCube(new Cube(0, -1,  1, ts->texture("ROCK_TOP")));
+  s->AddCube(new Cube(1, -1,  0, ts->texture("ROCK_TOP")));
+  s->AddCube(new Cube(1, -1,  1, ts->texture("ROCK_TOP")));
+  s->AddCube(new Cube(0,  0,  0, ts->texture("ROCK_TOP")));
+  s->AddCube(new Cube(0,  0,  1, ts->texture("ROCK_TOP")));
+  s->AddCube(new Cube(1,  0,  0, ts->texture("ROCK_TOP")));
+  s->AddCube(new Cube(1,  0,  1, ts->texture("ROCK_TOP")));
+
   // Create test cubes
   s->AddCube(new Cube(-1,  0,  0, ts->texture("ROCK_TOP")));
   s->AddCube(new Cube(-2,  0,  0, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
@@ -204,6 +218,9 @@ Scene *Scene::CreateTestScene(void) {
   s->g_pers_proj_info()->Width = CUBE_WIDTH;
   s->g_pers_proj_info()->zNear = -100.0f;
   s->g_pers_proj_info()->zFar = 100.0f;
+
+  // AABBTree
+  s->CreateAABBTree();
 
   // s->Dump();
 

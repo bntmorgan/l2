@@ -26,7 +26,7 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "texture.h"
 #include "graphic.h"
-#include "physic.h"
+#include "rect.h"
 
 #include "math_3d.h"
 
@@ -42,7 +42,7 @@ struct Vertex {
     }
 };
 
-class Cube : public Graphic, public Physic {
+class Cube : public Graphic, public Rect {
  private:
   // Collided with player
   bool collided_;
@@ -56,13 +56,13 @@ class Cube : public Graphic, public Physic {
   static GLuint vbo_;
   static GLuint ibo_;
  public:
-  Cube(float x, float y, float z, Texture *t) : Physic (x, y, z),
+  Cube(float x, float y, float z, Texture *t) : Rect(x, y, z),
       collided_(false), t_side_(t), t_top_(t), t_bottom_(t) { };
   Cube(float x, float y, float z, Texture *t_side, Texture *t_top_bottom) :
-      Physic (x, y, z), collided_(false), t_side_(t_side),
+      Rect(x, y, z), collided_(false), t_side_(t_side),
       t_top_(t_top_bottom), t_bottom_(t_top_bottom) { };
   Cube(float x, float y, float z, Texture *t_side, Texture *t_top,
-      Texture *t_bottom) : Physic (x, y, z), collided_(false),
+      Texture *t_bottom) : Rect(x, y, z), collided_(false),
       t_side_(t_side), t_top_(t_top), t_bottom_(t_bottom) { };
   ~Cube() { DestroyGL(); };
   static void InitGL(void);

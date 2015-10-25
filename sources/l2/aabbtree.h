@@ -17,6 +17,25 @@ You should have received a copy of the GNU General Public License
 along with L2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#!/bin/bash
-ffmpeg -f x11grab -video_size 1366x768 -i :0.0 -c:v ffvhuff test.mkv
-ffmpeg -i test.mkv -c:v libvpx -qmin 0 -qmax 50 -crf 5 -b:v 1M -c:a libvorbis  -cpu-used 4 -threads 8 output.webm
+#ifndef __AABBTREE_H__
+#define __AABBTREE_H__
+
+#include <vector>
+#include "rect.h"
+
+struct AABBCell {
+  struct AABBCell *l_child; // Children
+  struct AABBCell *r_child;
+  struct AABBCell *parent; // Parent
+  Rect e_box; // Encompassing counding box
+  std::vector<Rect *> boxes; // Boxes handled by this node
+};
+
+class AABBTree {
+ public:
+  AABBTree(const std::vector<Rect *> &e);
+ private:
+  struct AABBCell *root_;
+};
+
+#endif//__AABBTREE_H__
