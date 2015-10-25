@@ -34,7 +34,7 @@ const char* pFSFileName = "sources/l2/shader.fs";
 
 void Scene::CreateAABBTree(void) {
   std::vector<Rect *> rects(cubes_.begin(), cubes_.end());
-  AABBTree t(rects);
+  collider_ = new AABBTree(rects);
 }
 
 Scene::Scene(void) : camera_(Camera(WINDOW_WIDTH, WINDOW_HEIGHT)) {
@@ -47,6 +47,7 @@ Scene::Scene(void) : camera_(Camera(WINDOW_WIDTH, WINDOW_HEIGHT)) {
 
 Scene::~Scene(void) {
   Cube::DestroyGL();
+  delete collider_;
 }
 
 bool ReadFile(const char* pFileName, std::string& outFile) {

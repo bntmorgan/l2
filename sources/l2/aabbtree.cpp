@@ -135,3 +135,16 @@ static AABBCell *Pass(const std::vector<Rect *> &e, AABBCell *p, int m_depth){
 AABBTree::AABBTree(const std::vector<Rect *> &e) {
   root_ = Pass(e, NULL, 10);
 }
+
+static void Destroy(AABBCell *c) {
+  if (c == NULL) {
+    return;
+  }
+  Destroy(c->l_child);
+  Destroy(c->r_child);
+  delete c;
+}
+
+AABBTree::~AABBTree(void) {
+  Destroy(root_);
+}

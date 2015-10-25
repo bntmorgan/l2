@@ -34,6 +34,7 @@ struct AABBCell {
 class AABBTree {
  public:
   AABBTree(const std::vector<Rect *> &e);
+  ~AABBTree(void);
  private:
   struct AABBCell *root_;
 };

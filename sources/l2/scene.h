@@ -46,6 +46,8 @@ class Scene {
   GLuint g_world_location_;
   GLuint g_sampler_;
   Textures *textures_;
+  // Physics
+  AABBTree *collider_;
   // Math
   Pipeline p_;
   PersProjInfo g_pers_proj_info_;

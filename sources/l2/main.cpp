@@ -227,5 +227,8 @@ int main(int argc, char *argv[]) {
 
   glutMainLoop();
 
+  delete s;
+  delete g;
+
   return 0;
 }
