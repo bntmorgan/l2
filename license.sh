@@ -1,6 +1,6 @@
 #!/bin/bash
 # script to copy the headers to all the source files and header files
-for f in `find . -type f | grep -i "\(cpp\|h\|s\|S\)$"`; do
+for f in `find . -type f | grep -i "\.\(cpp\|h\|s\|S\)$"`; do
   if (grep Copyright $f);then 
     echo "No need to copy the License Header to $f"
   else
