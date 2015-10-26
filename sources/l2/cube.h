@@ -30,18 +30,6 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "math_3d.h"
 
-struct Vertex {
-    Vector3f m_pos;
-    Vector2f m_tex;
-
-    Vertex() {}
-
-    Vertex(Vector3f pos, Vector2f tex) {
-        m_pos = pos;
-        m_tex = tex;
-    }
-};
-
 class Cube : public Graphic, public Rect {
  private:
   // Collided with player
@@ -64,7 +52,6 @@ class Cube : public Graphic, public Rect {
   Cube(float x, float y, float z, Texture *t_side, Texture *t_top,
       Texture *t_bottom) : Rect(x, y, z), collided_(false),
       t_side_(t_side), t_top_(t_top), t_bottom_(t_bottom) { };
-  ~Cube() { DestroyGL(); };
   static void InitGL(void);
   static void DestroyGL(void);
   void Render();

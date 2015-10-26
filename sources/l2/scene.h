@@ -31,6 +31,7 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 #include "camera.h"
 #include "textures.h"
 #include "aabbtree.h"
+#include "shader.h"
 
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 720
@@ -43,8 +44,6 @@ class Cube;
 class Scene {
  private:
   std::vector<Cube*> cubes_;
-  GLuint g_world_location_;
-  GLuint g_sampler_;
   Textures *textures_;
   // Physics
   AABBTree *collider_;
@@ -57,6 +56,10 @@ class Scene {
   Vector2f r_;
   // Player
   Player *player_;
+  // Opengl
+  GLuint g_world_location_;
+  GLuint g_sampler_;
+  Shader cube_shader_;
  public:
   Scene(void);
   ~Scene(void);

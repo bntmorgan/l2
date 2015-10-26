@@ -17,26 +17,23 @@ You should have received a copy of the GNU General Public License
 along with L2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __GRAPHIC_H__
-#define __GRAPHIC_H__
+#ifndef __SHADER_H__
+#define __SHADER_H__
 
-#include "math_3d.h"
+#include <GL/glew.h>
+#include <GL/freeglut.h>
 
-struct Vertex {
-    Vector3f m_pos;
-    Vector2f m_tex;
-
-    Vertex() {}
-
-    Vertex(Vector3f pos, Vector2f tex) {
-        m_pos = pos;
-        m_tex = tex;
-    }
-};
-
-class Graphic {
+class Shader {
+ private:
+  GLint program_;
  public:
-  virtual void Render(void) = 0;
+  Shader(void);
+  ~Shader(void);
+  void Use(void);
+  void AddShader(const char *filename, GLenum shader_type);
+  void Link(void);
+  // Accessors
+  GLint program(void) { return program_; }
 };
 
-#endif//__GRAPHIC_H__
+#endif//__SHADER_H__
