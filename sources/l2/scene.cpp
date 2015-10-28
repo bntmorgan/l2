@@ -51,21 +51,23 @@ Scene::~Scene(void) {
 }
 
 void Scene::CompileShaders() {
-  // Compile Shaders
-  cube_shader_.AddShader(filename_vs_cube, GL_VERTEX_SHADER);
-  cube_shader_.AddShader(filename_fs_cube, GL_FRAGMENT_SHADER);
+  // Compile Cube Shaders
+  shader_cube_.AddShader(filename_vs_cube, GL_VERTEX_SHADER);
+  shader_cube_.AddShader(filename_fs_cube, GL_FRAGMENT_SHADER);
   // GLSL 130 attribute location
-  glBindAttribLocation(cube_shader_.program(), 0, "Position");
-  glBindAttribLocation(cube_shader_.program(), 1, "TexCoord");
+  glBindAttribLocation(shader_cube_.program(), 0, "Position");
+  glBindAttribLocation(shader_cube_.program(), 1, "TexCoord");
   // Link
-  cube_shader_.Link();
+  shader_cube_.Link();
   // World + view transformation 4x4 matrix
-  g_world_location_ = glGetUniformLocation(cube_shader_.program(), "gWVP");
-  assert(g_world_location_ != 0xFFFFFFFF);
-  g_sampler_ = glGetUniformLocation(cube_shader_.program(), "gSampler");
+  world_ = glGetUniformLocation(shader_cube_.program(), "world");
+  view_ = glGetUniformLocation(shader_cube_.program(), "view");
+  proj_ = glGetUniformLocation(shader_cube_.program(), "proj");
+  assert(world_ != 0xFFFFFFFF);
+  g_sampler_ = glGetUniformLocation(shader_cube_.program(), "gSampler");
   assert(g_sampler_ != 0xFFFFFFFF);
   glUniform1i(g_sampler_, 0);
-  cube_shader_.Use();
+  shader_cube_.Use();
 }
 
 /**
@@ -177,6 +179,14 @@ void Scene::Render(void) {
 
   camera_.OnRender();
   player_->Update();
+
+  // Camera and perspective
+  p_.SetCamera(camera_);
+  p_.SetPerspectiveProj(g_pers_proj_info_);
+  glUniformMatrix4fv(view_, 1, GL_TRUE, (const GLfloat*)p_.GetViewTrans());
+  glUniformMatrix4fv(proj_, 1, GL_TRUE, (const GLfloat*)p_.GetOrthoProjTrans());
+
+  // Cubes
   for (i = 0; i < cubes_.size(); i++) {
 		p_.WorldPos(1.0f * cubes_[i]->x(), 1.0f * cubes_[i]->y(),
         1.0f * cubes_[i]->z());
@@ -186,22 +196,16 @@ void Scene::Render(void) {
       p_.Scale(1.f, 1.f, 1.f);
     }
     p_.Rotate(0.f, 0.f, 0.0f);
-    p_.SetCamera(camera_);
-    p_.SetPerspectiveProj(g_pers_proj_info_);
-    glUniformMatrix4fv(g_world_location_, 1, GL_TRUE,
-        (const GLfloat*)p_.GetWVOrthoPTrans());
+    glUniformMatrix4fv(world_, 1, GL_TRUE, (const GLfloat*)p_.GetWorldTrans());
     cubes_[i]->Render();
   }
 
-  // XXX Draw player
+  // Player
   p_.WorldPos(1.0f * player_->x(), 1.0f * player_->y(),
       1.0f * player_->z());
   p_.Rotate(0.f, player_->f(), 0.0f);
   p_.Scale(1.f, 1.f, 1.f);
-  p_.SetCamera(camera_);
-  p_.SetPerspectiveProj(g_pers_proj_info_);
-  glUniformMatrix4fv(g_world_location_, 1, GL_TRUE,
-      (const GLfloat*)p_.GetWVOrthoPTrans());
+  glUniformMatrix4fv(world_, 1, GL_TRUE, (const GLfloat*)p_.GetWorldTrans());
   player_->Render();
 
   glutSwapBuffers();

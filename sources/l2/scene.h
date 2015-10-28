@@ -57,9 +57,11 @@ class Scene {
   // Player
   Player *player_;
   // Opengl
-  GLuint g_world_location_;
+  GLuint world_; // Object position in world
+  GLuint view_; // Camera view
+  GLuint proj_; // Projection
   GLuint g_sampler_;
-  Shader cube_shader_;
+  Shader shader_cube_;
  public:
   Scene(void);
   ~Scene(void);
@@ -77,7 +79,9 @@ class Scene {
   void OnJoystickAxis(Vector2f l, Vector2f r);
   void CreateAABBTree(void);
   // Accessors
-  GLuint g_world_location(void) { return g_world_location_; }
+  GLuint world(void) { return world_; }
+  GLuint view(void) { return view_; }
+  GLuint proj(void) { return proj_; }
   PersProjInfo *g_pers_proj_info(void) { return &g_pers_proj_info_; }
   Camera p_game_camera(void) { return camera_; }
   void set_textures(Textures *textures) {

@@ -22,11 +22,16 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 in vec3 Position;
 in vec2 TexCoord;
 
-uniform mat4 gWVP;
+uniform mat4 proj;
+uniform mat4 world;
+uniform mat4 view;
+
+mat4 trans;
 
 out vec2 TexCoord0;
 
 void main() {
-  gl_Position = gWVP * vec4(Position, 1.0);
+  trans = proj * view * world;
+  gl_Position = trans * vec4(Position, 1.0);
   TexCoord0 = TexCoord;
 }
