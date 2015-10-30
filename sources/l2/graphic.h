@@ -42,8 +42,10 @@ class Graphic {
   virtual void Draw(void) = 0;
   // GL
   static Vertex cube_vertices_[];
+  static Vector3f ccube_vertices_[];
   static unsigned int cube_indices_[];
   static GLuint cube_vbo_;
+  static GLuint ccube_vbo_;
   static GLuint cube_ibo_;
   static void InitGL(void);
   static void DestroyGL(void);

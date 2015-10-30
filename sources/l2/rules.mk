@@ -8,7 +8,7 @@ OBJS_$(d)				:= $(call SRC_2_OBJ, $(d)/main.o $(d)/tcube.o $(d)/scene.o \
 	$(d)/textures.o $(d)/texture.o \
 	$(d)/common/math_3d.o	$(d)/common/pipeline.o $(d)/common/camera.o \
 	$(d)/gamepad.o $(d)/player.o $(d)/aabbtree.o $(d)/aabb.o $(d)/shader.o \
-	$(d)/graphic.o)
+	$(d)/graphic.o $(d)/ccube.o)
 
 OBJECTS 				+= $(OBJS_$(d))
 

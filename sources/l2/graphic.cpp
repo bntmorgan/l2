@@ -36,16 +36,48 @@ unsigned int Graphic::cube_indices_[] = {
   20,21,22,23 // bottom
 };
 
+Vector3f Graphic::ccube_vertices_[] = {
+  Vector3f(-0.5f,-0.5f,0.5f),
+  Vector3f(0.5f,-0.5f,0.5f),
+  Vector3f(0.5f,0.5f,0.5f),
+  Vector3f(-0.5f,0.5f,0.5f),
+  Vector3f(-0.5f,0.5f,-0.5f),
+  Vector3f(0.5f,0.5f,-0.5f),
+  Vector3f(0.5f,-0.5f,-0.5f),
+  Vector3f(-0.5f,-0.5f,-0.5f),
+  Vector3f(0.5f,-0.5f,0.5f),
+  Vector3f(0.5f,-0.5f,-0.5f),
+  Vector3f(0.5f,0.5f,-0.5f),
+  Vector3f(0.5f,0.5f,0.5f),
+  Vector3f(-0.5f,-0.5f,-0.5f),
+  Vector3f(-0.5f,-0.5f,0.5f),
+  Vector3f(-0.5f,0.5f,0.5f),
+  Vector3f(-0.5f,0.5f,-0.5f),
+  Vector3f(-0.5f,0.5f,0.5f),
+  Vector3f(0.5f,0.5f,0.5f),
+  Vector3f(0.5f,0.5f,-0.5f),
+  Vector3f(-0.5f,0.5f,-0.5f),
+  Vector3f(-0.5f,-0.5f,-0.5f),
+  Vector3f(0.5f,-0.5f,-0.5f),
+  Vector3f(0.5f,-0.5f,0.5f),
+  Vector3f(-0.5f,-0.5f,0.5f)
+};
+
 GLuint Graphic::cube_vbo_;
+GLuint Graphic::ccube_vbo_;
 GLuint Graphic::cube_ibo_;
 
 void Graphic::InitGL(void) {
-  // Indices
+  // Vertices
   glGenBuffers(1, &Graphic::cube_vbo_);
   glBindBuffer(GL_ARRAY_BUFFER, Graphic::cube_vbo_);
   glBufferData(GL_ARRAY_BUFFER, sizeof(Graphic::cube_vertices_),
       Graphic::cube_vertices_, GL_STATIC_DRAW);
-
+  glGenBuffers(1, &Graphic::ccube_vbo_);
+  glBindBuffer(GL_ARRAY_BUFFER, Graphic::ccube_vbo_);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(Graphic::ccube_vertices_),
+      Graphic::ccube_vertices_, GL_STATIC_DRAW);
+  // Indices
   glGenBuffers(1, &Graphic::cube_ibo_);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Graphic::cube_ibo_);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Graphic::cube_indices_),
