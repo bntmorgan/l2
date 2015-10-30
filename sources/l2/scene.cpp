@@ -73,7 +73,7 @@ void Scene::CompileShaders() {
 /**
  * XXX Scene test function
  */
-#define CUBES_NB 6
+#define CUBES_NB 8
 Scene *Scene::CreateTestScene(void) {
   Scene *s = new Scene;
   int i, j;
@@ -87,17 +87,17 @@ Scene *Scene::CreateTestScene(void) {
     for (j = -CUBES_NB; j <= CUBES_NB; j++) {
       if (i == -CUBES_NB || i == CUBES_NB || j == -CUBES_NB || j == CUBES_NB) {
         s->AddCube(new Object(new AABB(i,  0,  j),
-            new Cube(ts->texture("ROCKS"))));
+            new TCube(ts->texture("ROCKS"))));
         s->AddCube(new Object(new AABB(i,  1,  j),
-            new Cube(ts->texture("ROCKS"))));
+            new TCube(ts->texture("ROCKS"))));
       }
       if (i <= -CUBES_NB + 2 || i >= CUBES_NB - 2 ||
           j <= -CUBES_NB + 2 || j >= CUBES_NB - 2) {
         s->AddCube(new Object(new AABB(i,  0,  j),
-            new Cube(ts->texture("WATER_TOP"))));
+            new TCube(ts->texture("WATER_TOP"))));
       } else {
         s->AddCube(new Object(new AABB(i,  0,  j),
-            new Cube(ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP"))));
+            new TCube(ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP"))));
       }
     }
   }
@@ -140,16 +140,16 @@ void Scene::AddCube(Object *c) {
 
 void Scene::Physics(void) {
   unsigned int i;
-  Cube *c;
+  TCube *c;
   for (i = 0; i < cubes_.size(); i++) {
-    c = (Cube *)cubes_[i]->g();
+    c = (TCube *)cubes_[i]->g();
     c->set_collided(cubes_[i]->b()->Collide(player_));
   }
 }
 
 void Scene::Render(void) {
   unsigned int i;
-  Cube *c;
+  TCube *c;
   AABB *b;
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -165,9 +165,9 @@ void Scene::Render(void) {
 
   // Cubes
   // Cube drawing optimization
-  Cube::DrawPre();
+  TCube::DrawPre();
   for (i = 0; i < cubes_.size(); i++) {
-    c = (Cube *)cubes_[i]->g();
+    c = (TCube *)cubes_[i]->g();
     b = cubes_[i]->b();
     p_.WorldPos(1.0f * b->x(), 1.0f * b->y(), 1.0f * b->z());
     if (c->collided()) {
@@ -187,7 +187,7 @@ void Scene::Render(void) {
   p_.Scale(1.f, 1.f, 1.f);
   glUniformMatrix4fv(world_, 1, GL_TRUE, (const GLfloat*)p_.GetWorldTrans());
   player_->Draw();
-  Cube::DrawPost();
+  TCube::DrawPost();
 
   glutSwapBuffers();
 }

@@ -4,7 +4,7 @@ d               := $(dir)
 
 TARGET					:= $(call SRC_2_BIN, $(d)/l2)
 TARGETS 				+= $(TARGET)
-OBJS_$(d)				:= $(call SRC_2_OBJ, $(d)/main.o $(d)/cube.o $(d)/scene.o \
+OBJS_$(d)				:= $(call SRC_2_OBJ, $(d)/main.o $(d)/tcube.o $(d)/scene.o \
 	$(d)/textures.o $(d)/texture.o \
 	$(d)/common/math_3d.o	$(d)/common/pipeline.o $(d)/common/camera.o \
 	$(d)/gamepad.o $(d)/player.o $(d)/aabbtree.o $(d)/aabb.o $(d)/shader.o \

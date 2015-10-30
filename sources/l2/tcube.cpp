@@ -21,9 +21,9 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
-#include "cube.h"
+#include "tcube.h"
 
-void Cube::DrawPre(void) {
+void TCube::DrawPre(void) {
   glEnableVertexAttribArray(0);
   glEnableVertexAttribArray(1);
 
@@ -34,12 +34,12 @@ void Cube::DrawPre(void) {
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Graphic::cube_ibo_);
 }
 
-void Cube::DrawPost(void) {
+void TCube::DrawPost(void) {
   glDisableVertexAttribArray(0);
   glEnableVertexAttribArray(1);
 }
 
-void Cube::Draw() {
+void TCube::Draw() {
   // Sides
   t_side_->Bind(GL_TEXTURE0);
   glDrawElements(GL_QUADS, 16, GL_UNSIGNED_INT, 0);

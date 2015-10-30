@@ -20,12 +20,12 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef __PLAYER_H__
 #define __PLAYER_H__
 
-#include "cube.h"
+#include "tcube.h"
 #include "aabb.h"
 #include "texture.h"
 #include "camera.h"
 
-class Player: public AABB, public Cube {
+class Player: public AABB, public TCube {
  private:
    // Facing
    float f_;
@@ -35,7 +35,7 @@ class Player: public AABB, public Cube {
    Vector3f m_pm;
  public:
   Player(float x, float y, float z, Texture *t, Camera *c) : AABB(x, y, z),
-      Cube(t), f_(0), camera_(c), m_pm(0, 0, 0) { };
+      TCube(t), f_(0), camera_(c), m_pm(0, 0, 0) { };
   void OnJoystick(Vector2f l, Vector2f r);
   void Update(void);
   float f(void) { return f_; }

@@ -17,8 +17,8 @@ You should have received a copy of the GNU General Public License
 along with L2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __CUBE_H__
-#define __CUBE_H__
+#ifndef __TCUBE_H__
+#define __TCUBE_H__
 
 #include <stdio.h>
 
@@ -27,7 +27,7 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "math_3d.h"
 
-class Cube : public Graphic {
+class TCube : public Graphic {
  private:
   // Collided with player
   bool collided_;
@@ -36,10 +36,10 @@ class Cube : public Graphic {
   Texture *t_top_;
   Texture *t_bottom_;
  public:
-  Cube(Texture *t) : collided_(false), t_side_(t), t_top_(t), t_bottom_(t) { };
-  Cube(Texture *t_side, Texture *t_top_bottom) : collided_(false),
+  TCube(Texture *t) : collided_(false), t_side_(t), t_top_(t), t_bottom_(t) { };
+  TCube(Texture *t_side, Texture *t_top_bottom) : collided_(false),
       t_side_(t_side), t_top_(t_top_bottom), t_bottom_(t_top_bottom) { };
-  Cube(Texture *t_side, Texture *t_top, Texture *t_bottom) : collided_(false),
+  TCube(Texture *t_side, Texture *t_top, Texture *t_bottom) : collided_(false),
       t_side_(t_side), t_top_(t_top), t_bottom_(t_bottom) { };
   void Draw(void);
   // Accessors
@@ -49,4 +49,4 @@ class Cube : public Graphic {
   static void DrawPost(void);
 };
 
-#endif//__CUBE_H__
+#endif//__TCUBE_H__
