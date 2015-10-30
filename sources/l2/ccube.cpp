@@ -17,15 +17,24 @@ You should have received a copy of the GNU General Public License
 along with L2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#version 130
+#include <stdio.h>
+#include <GL/glew.h>
+#include <GL/freeglut.h>
 
-in vec4 Color;
-in vec2 TexCoord0;
+#include "ccube.h"
 
-out vec4 FragColor;
+void CCube::DrawPre(void) {
+  glEnableVertexAttribArray(0);
 
-uniform sampler2D sampler;
+  glBindBuffer(GL_ARRAY_BUFFER, Graphic::ccube_vbo_);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Graphic::cube_ibo_);
+}
 
-void main() {
-  FragColor = texture2D(sampler, TexCoord0.xy);
+void CCube::DrawPost(void) {
+  glDisableVertexAttribArray(0);
+}
+
+void CCube::Draw() {
+  glDrawElements(GL_QUADS, 24, GL_UNSIGNED_INT, 0);
 }

@@ -20,6 +20,7 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
+#include <assert.h>
 
 #include "shader.h"
 
@@ -95,6 +96,14 @@ void Shader::Link(void) {
     fprintf(stderr, "Invalid shader program: '%s'\n", error_log);
     exit(1);
   }
+
+  // World + view transformation 4x4 matrix
+  world_ = glGetUniformLocation(program_, "world");
+  assert(world_ != 0xFFFFFFFF);
+  view_ = glGetUniformLocation(program_, "view");
+  assert(view_ != 0xFFFFFFFF);
+  proj_ = glGetUniformLocation(program_, "proj");
+  assert(proj_ != 0xFFFFFFFF);
 }
 
 void Shader::Use(void) {

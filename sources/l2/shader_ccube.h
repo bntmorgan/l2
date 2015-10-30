@@ -17,15 +17,20 @@ You should have received a copy of the GNU General Public License
 along with L2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#version 130
+#ifndef __SHADER_CCUBE__
+#define __SHADER_CCUBE__
 
-in vec4 Color;
-in vec2 TexCoord0;
+#include <GL/glew.h>
+#include <GL/freeglut.h>
 
-out vec4 FragColor;
+#include "shader.h"
 
-uniform sampler2D sampler;
+class ShaderCCube : public Shader {
+ private:
+  GLuint color_;
+ public:
+  GLuint color(void) { return color_; }
+  void Link(void);
+};
 
-void main() {
-  FragColor = texture2D(sampler, TexCoord0.xy);
-}
+#endif//__SHADER_CCUBE__

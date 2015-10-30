@@ -17,15 +17,26 @@ You should have received a copy of the GNU General Public License
 along with L2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#version 130
+#ifndef __CCUBE_H__
+#define __CCUBE_H__
 
-in vec4 Color;
-in vec2 TexCoord0;
+#include <stdio.h>
 
-out vec4 FragColor;
+#include "texture.h"
+#include "graphic.h"
 
-uniform sampler2D sampler;
+#include "math_3d.h"
 
-void main() {
-  FragColor = texture2D(sampler, TexCoord0.xy);
-}
+class CCube : public Graphic {
+ private:
+  Vector4f color_;
+ public:
+  CCube(const Vector4f &color) : color_(color) { };
+  void Draw(void);
+  static void DrawPre(void);
+  static void DrawPost(void);
+  // Accessors
+  Vector4f *color(void) { return &color_; }
+};
+
+#endif//__CCUBE_H__

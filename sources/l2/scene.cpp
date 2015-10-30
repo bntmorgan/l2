@@ -24,17 +24,19 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
-#include <assert.h>
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <math.h>
+#include "ccube.h"
 
-const char* filename_vs_cube = "sources/l2/shaders/tcube.vs";
-const char* filename_fs_cube = "sources/l2/shaders/tcube.fs";
+const char* filename_vs_tcube = "sources/l2/shaders/tcube.vs";
+const char* filename_fs_tcube = "sources/l2/shaders/tcube.fs";
+const char* filename_vs_ccube = "sources/l2/shaders/ccube.vs";
+const char* filename_fs_ccube = "sources/l2/shaders/ccube.fs";
 
 void Scene::CreateAABBTree(void) {
   std::vector<Object *> rects(cubes_.begin(), cubes_.end());
-  collider_ = new AABBTree(rects);
+  collider_ = new AABBTree(rects, 100);
 }
 
 Scene::Scene(void) : camera_(Camera(WINDOW_WIDTH, WINDOW_HEIGHT)) {
@@ -43,6 +45,7 @@ Scene::Scene(void) : camera_(Camera(WINDOW_WIDTH, WINDOW_HEIGHT)) {
   // Player
   player_ = new Player(0,  1,  0, textures_->texture("PLAYER"), &camera_);
   Graphic::InitGL();
+  display_collider_ = false;
 }
 
 Scene::~Scene(void) {
@@ -51,23 +54,14 @@ Scene::~Scene(void) {
 }
 
 void Scene::CompileShaders() {
-  // Compile Cube Shaders
-  shader_cube_.AddShader(filename_vs_cube, GL_VERTEX_SHADER);
-  shader_cube_.AddShader(filename_fs_cube, GL_FRAGMENT_SHADER);
-  // GLSL 130 attribute location
-  glBindAttribLocation(shader_cube_.program(), 0, "Position");
-  glBindAttribLocation(shader_cube_.program(), 1, "TexCoord");
-  // Link
-  shader_cube_.Link();
-  // World + view transformation 4x4 matrix
-  world_ = glGetUniformLocation(shader_cube_.program(), "world");
-  view_ = glGetUniformLocation(shader_cube_.program(), "view");
-  proj_ = glGetUniformLocation(shader_cube_.program(), "proj");
-  assert(world_ != 0xFFFFFFFF);
-  g_sampler_ = glGetUniformLocation(shader_cube_.program(), "gSampler");
-  assert(g_sampler_ != 0xFFFFFFFF);
-  glUniform1i(g_sampler_, 0);
-  shader_cube_.Use();
+  // Compile Textured Cube Shaders
+  shader_tcube_.AddShader(filename_vs_tcube, GL_VERTEX_SHADER);
+  shader_tcube_.AddShader(filename_fs_tcube, GL_FRAGMENT_SHADER);
+  shader_tcube_.Link();
+  // Compile Textured Cube Shaders
+  shader_ccube_.AddShader(filename_vs_ccube, GL_VERTEX_SHADER);
+  shader_ccube_.AddShader(filename_fs_ccube, GL_FRAGMENT_SHADER);
+  shader_ccube_.Link();
 }
 
 /**
@@ -106,8 +100,8 @@ Scene *Scene::CreateTestScene(void) {
   s->g_pers_proj_info()->FOV = 0.0f;
   s->g_pers_proj_info()->Height = CUBE_HEIGHT;
   s->g_pers_proj_info()->Width = CUBE_WIDTH;
-  s->g_pers_proj_info()->zNear = -100.0f;
-  s->g_pers_proj_info()->zFar = 100.0f;
+  s->g_pers_proj_info()->zNear = -30.0f;
+  s->g_pers_proj_info()->zFar = 30.0f;
 
   // AABBTree
   s->CreateAABBTree();
@@ -118,6 +112,9 @@ Scene *Scene::CreateTestScene(void) {
 }
 
 void Scene::OnKeyboard(int key) {
+  if (key == OGLDEV_KEY_d) {
+    display_collider_ = !display_collider_;
+  }
   if (key == OGLDEV_KEY_q) {
     exit(0);
   }
@@ -149,7 +146,8 @@ void Scene::Physics(void) {
 
 void Scene::Render(void) {
   unsigned int i;
-  TCube *c;
+  TCube *tc;
+  CCube *cc;
   AABB *b;
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -160,24 +158,30 @@ void Scene::Render(void) {
   // Camera and perspective
   p_.SetCamera(camera_);
   p_.SetPerspectiveProj(g_pers_proj_info_);
-  glUniformMatrix4fv(view_, 1, GL_TRUE, (const GLfloat*)p_.GetViewTrans());
-  glUniformMatrix4fv(proj_, 1, GL_TRUE, (const GLfloat*)p_.GetOrthoProjTrans());
+  glUniformMatrix4fv(shader_tcube_.view(), 1, GL_TRUE,
+      (const GLfloat*)p_.GetViewTrans());
+  glUniformMatrix4fv(shader_tcube_.proj(), 1, GL_TRUE,
+      (const GLfloat*)p_.GetOrthoProjTrans());
 
   // Cubes
+  shader_tcube_.Use();
   // Cube drawing optimization
   TCube::DrawPre();
-  for (i = 0; i < cubes_.size(); i++) {
-    c = (TCube *)cubes_[i]->g();
-    b = cubes_[i]->b();
-    p_.WorldPos(1.0f * b->x(), 1.0f * b->y(), 1.0f * b->z());
-    if (c->collided()) {
-      p_.Scale(1.f, 2.f, 1.f);
-    } else {
-      p_.Scale(1.f, 1.f, 1.f);
+  if (!display_collider_) {
+    for (i = 0; i < cubes_.size(); i++) {
+      tc = (TCube *)cubes_[i]->g();
+      b = cubes_[i]->b();
+      p_.WorldPos(1.0f * b->x(), 1.0f * b->y(), 1.0f * b->z());
+      if (tc->collided()) {
+        p_.Scale(1.f, 2.f, 1.f);
+      } else {
+        p_.Scale(1.f, 1.f, 1.f);
+      }
+      p_.Rotate(0.f, 0.f, 0.0f);
+      glUniformMatrix4fv(shader_tcube_.world(), 1, GL_TRUE,
+          (const GLfloat*)p_.GetWorldTrans());
+      tc->Draw();
     }
-    p_.Rotate(0.f, 0.f, 0.0f);
-    glUniformMatrix4fv(world_, 1, GL_TRUE, (const GLfloat*)p_.GetWorldTrans());
-    c->Draw();
   }
 
   // Player
@@ -185,9 +189,32 @@ void Scene::Render(void) {
       1.0f * player_->z());
   p_.Rotate(0.f, player_->f(), 0.0f);
   p_.Scale(1.f, 1.f, 1.f);
-  glUniformMatrix4fv(world_, 1, GL_TRUE, (const GLfloat*)p_.GetWorldTrans());
+  glUniformMatrix4fv(shader_tcube_.world(), 1, GL_TRUE,
+      (const GLfloat*)p_.GetWorldTrans());
   player_->Draw();
   TCube::DrawPost();
+
+  // AABBTree debug
+  if (display_collider_) {
+    glUniformMatrix4fv(shader_ccube_.view(), 1, GL_TRUE,
+        (const GLfloat*)p_.GetViewTrans());
+    glUniformMatrix4fv(shader_ccube_.proj(), 1, GL_TRUE,
+        (const GLfloat*)p_.GetOrthoProjTrans());
+    shader_ccube_.Use();
+    CCube::DrawPre();
+    for (i = 0; i < collider_->boxes().size(); i++) {
+      cc = (CCube *)collider_->boxes()[i]->g();
+      b = collider_->boxes()[i]->b();
+      glUniform4fv(shader_ccube_.color(), 1, (const GLfloat*)cc->color());
+      p_.WorldPos(b->x(), b->y(), b->z());
+      p_.Scale(b->w(), b->h(), b->d());
+      p_.Rotate(0.f, 0.f, 0.0f);
+      glUniformMatrix4fv(shader_ccube_.world(), 1, GL_TRUE,
+          (const GLfloat*)p_.GetWorldTrans());
+      cc->Draw();
+    }
+    CCube::DrawPost();
+  }
 
   glutSwapBuffers();
 }

@@ -17,15 +17,17 @@ You should have received a copy of the GNU General Public License
 along with L2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#version 130
+#include <assert.h>
 
-in vec4 Color;
-in vec2 TexCoord0;
+#include "shader_tcube.h"
 
-out vec4 FragColor;
-
-uniform sampler2D sampler;
-
-void main() {
-  FragColor = texture2D(sampler, TexCoord0.xy);
+void ShaderTCube::Link(void) {
+  // GLSL 130 attribute location
+  glBindAttribLocation(program_, 0, "Position");
+  glBindAttribLocation(program_, 1, "TexCoord");
+  // Link
+  Shader::Link();
+  sampler_ = glGetUniformLocation(program_, "sampler");
+  assert(sampler_ != 0xFFFFFFFF);
+  glUniform1i(sampler_, 0);
 }

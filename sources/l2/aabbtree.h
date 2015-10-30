@@ -36,11 +36,15 @@ struct AABBCell {
 
 class AABBTree {
  public:
-  AABBTree(const std::vector<Object *> &e);
+  AABBTree(const std::vector<Object *> &e, unsigned int max_depth);
   ~AABBTree(void);
+  const std::vector<Object*> &boxes(void) { return boxes_; }
  private:
   std::vector<AABB*> world_;
+  std::vector<Object*> boxes_;
+  unsigned int max_depth_;
   struct AABBCell *root_;
+  AABBCell *Pass(const std::vector<AABB *> &e, AABBCell *p, int depth);
 };
 
 #endif//__AABBTREE_H__

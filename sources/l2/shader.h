@@ -25,15 +25,22 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 
 class Shader {
  private:
+  GLuint world_; // Object position in world
+  GLuint view_; // Camera view
+  GLuint proj_; // Projection
+ protected:
   GLint program_;
  public:
   Shader(void);
   ~Shader(void);
   void Use(void);
   void AddShader(const char *filename, GLenum shader_type);
-  void Link(void);
+  virtual void Link(void);
   // Accessors
   GLint program(void) { return program_; }
+  GLint world(void) { return world_; }
+  GLint view(void) { return view_; }
+  GLint proj(void) { return proj_; }
 };
 
 #endif//__SHADER_H__

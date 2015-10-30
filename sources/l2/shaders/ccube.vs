@@ -19,13 +19,20 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 
 #version 130
 
-in vec4 Color;
-in vec2 TexCoord0;
+in vec3 Position;
 
-out vec4 FragColor;
+uniform mat4 proj;
+uniform mat4 world;
+uniform mat4 view;
 
-uniform sampler2D sampler;
+uniform vec4 color;
+
+out vec4 fcolor;
+
+mat4 trans;
 
 void main() {
-  FragColor = texture2D(sampler, TexCoord0.xy);
+  trans = proj * view * world;
+  gl_Position = trans * vec4(Position, 1.0);
+  fcolor = color;
 }

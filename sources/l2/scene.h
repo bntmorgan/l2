@@ -32,6 +32,8 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 #include "textures.h"
 #include "aabbtree.h"
 #include "shader.h"
+#include "shader_tcube.h"
+#include "shader_ccube.h"
 
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 720
@@ -43,6 +45,7 @@ class Cube;
 
 class Scene {
  private:
+  bool display_collider_;
   std::vector<Object*> cubes_;
   Textures *textures_;
   // Physics
@@ -57,11 +60,8 @@ class Scene {
   // Player
   Player *player_;
   // Opengl
-  GLuint world_; // Object position in world
-  GLuint view_; // Camera view
-  GLuint proj_; // Projection
-  GLuint g_sampler_;
-  Shader shader_cube_;
+  ShaderTCube shader_tcube_;
+  ShaderCCube shader_ccube_;
  public:
   Scene(void);
   ~Scene(void);
@@ -79,9 +79,6 @@ class Scene {
   void OnJoystickAxis(Vector2f l, Vector2f r);
   void CreateAABBTree(void);
   // Accessors
-  GLuint world(void) { return world_; }
-  GLuint view(void) { return view_; }
-  GLuint proj(void) { return proj_; }
   PersProjInfo *g_pers_proj_info(void) { return &g_pers_proj_info_; }
   Camera p_game_camera(void) { return camera_; }
   void set_textures(Textures *textures) {

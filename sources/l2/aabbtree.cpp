@@ -23,6 +23,7 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "aabbtree.h"
 #include "aabb.h"
+#include "ccube.h"
 
 static AABB Encompassing(const std::vector<AABB *> &e) {
   AABB *t;
@@ -57,7 +58,7 @@ static AABB Encompassing(const std::vector<AABB *> &e) {
   return r;
 }
 
-static AABBCell *Pass(const std::vector<AABB *> &e, AABBCell *p, int m_depth){
+AABBCell *AABBTree::Pass(const std::vector<AABB *> &e, AABBCell *p, int depth) {
   if (e.size() == 0) {
     return NULL;
   }
@@ -66,7 +67,10 @@ static AABBCell *Pass(const std::vector<AABB *> &e, AABBCell *p, int m_depth){
   c->parent = p;
   c->e_box = eb;
   c->boxes = e;
-  if (e.size() == 1 || m_depth == 0) {
+  // Add it into the debug boxes
+  Vector4f color(1.f - (0.05f * depth), 0.f, 0.05f * depth, 0.5f);
+  boxes_.push_back(new Object(&c->e_box, new CCube(color)));
+  if (e.size() == 1 || depth == max_depth_) {
 //    printf("A leaf : ");
 //    e[0]->Dump();
     return c;
@@ -126,17 +130,18 @@ static AABBCell *Pass(const std::vector<AABB *> &e, AABBCell *p, int m_depth){
 //  printf("Right popuplation(%lu), left population(%lu)\n", l_child.size(),
 //      r_child.size());
   // Recursive call
-  c->l_child = Pass(l_child, c, m_depth - 1);
-  c->r_child = Pass(r_child, c, m_depth - 1);
+  c->l_child = Pass(l_child, c, depth + 1);
+  c->r_child = Pass(r_child, c, depth + 1);
   return c;
 }
 
-AABBTree::AABBTree(const std::vector<Object*> &e) {
+AABBTree::AABBTree(const std::vector<Object*> &e, unsigned int max_depth) :
+    max_depth_(max_depth) {
   int i;
   for (i = 0; i < e.size(); i++) {
     world_.push_back(e[i]->b());
   }
-  root_ = Pass(world_, NULL, 10);
+  root_ = Pass(world_, NULL, 0);
 }
 
 static void Destroy(AABBCell *c) {

@@ -19,13 +19,10 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 
 #version 130
 
-in vec4 Color;
-in vec2 TexCoord0;
+in vec4 fcolor;
 
 out vec4 FragColor;
 
-uniform sampler2D sampler;
-
 void main() {
-  FragColor = texture2D(sampler, TexCoord0.xy);
+  FragColor = fcolor;
 }
