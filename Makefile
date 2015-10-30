@@ -55,6 +55,9 @@ clean:
 run: all
 	./binary/l2/l2
 
+glxosd: all
+	glxosd ./binary/l2/l2
+
 info:
 	@echo Targets [$(TARGETS)]
 	@echo Objects [$(OBJECTS)]
