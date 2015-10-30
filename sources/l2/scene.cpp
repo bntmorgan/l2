@@ -29,8 +29,8 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 #include <GL/freeglut.h>
 #include <math.h>
 
-const char* filename_vs_cube = "sources/l2/shader.vs";
-const char* filename_fs_cube = "sources/l2/shader.fs";
+const char* filename_vs_cube = "sources/l2/shaders/tcube.vs";
+const char* filename_fs_cube = "sources/l2/shaders/tcube.fs";
 
 void Scene::CreateAABBTree(void) {
   std::vector<Object *> rects(cubes_.begin(), cubes_.end());
