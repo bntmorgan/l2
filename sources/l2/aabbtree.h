@@ -21,14 +21,16 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 #define __AABBTREE_H__
 
 #include <vector>
-#include "rect.h"
+#include "aabb.h"
 
 struct AABBCell {
   struct AABBCell *l_child; // Children
   struct AABBCell *r_child;
   struct AABBCell *parent; // Parent
-  Rect e_box; // Encompassing counding box
+  AABB e_box; // Encompassing bounding box
   std::vector<Rect *> boxes; // Boxes handled by this node
+
+  AABBCell(void) : l_child(NULL), r_child(NULL), parent(NULL) { }
 };
 
 class AABBTree {
@@ -36,6 +38,7 @@ class AABBTree {
   AABBTree(const std::vector<Rect *> &e);
   ~AABBTree(void);
  private:
+  std::vector<AABB*> world_;
   struct AABBCell *root_;
 };
 

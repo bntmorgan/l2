@@ -17,9 +17,9 @@ You should have received a copy of the GNU General Public License
 along with L2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "rect.h"
+#include "aabb.h"
 
-int Rect::LargestDim(void) {
+int AABB::LargestDim(void) {
   int l = w(), i = AXIS_X;
   if (l < h()) {
     l = h();

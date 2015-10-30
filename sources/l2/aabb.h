@@ -17,22 +17,32 @@ You should have received a copy of the GNU General Public License
 along with L2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __RECT_H__
-#define __RECT_H__
+#ifndef __AABB_H__
+#define __AABB_H__
 
-#include "geometry.h"
+#include <stdio.h>
 
-class Rect : public Geometry {
- private:
+enum Axis {
+  AXIS_X,
+  AXIS_Y,
+  AXIS_Z
+};
+
+class AABB {
+ protected:
+  float x_;
+  float y_;
+  float z_;
   float w_;
   float h_;
   float d_;
  public:
-  Rect (float x, float y, float z, float w, float h, float d) : Geometry(x, y,
-      z), w_(w), h_(h), d_(d) { }
-  Rect (void) : Geometry(0, 0, 0), w_(0), h_(0), d_(0) { }
-  Rect (float x, float y, float z) : Geometry(x, y, z), w_(1), h_(1), d_(1) { }
-  bool Collide(Rect *p) {
+  AABB (float x, float y, float z, float w, float h, float d) : x_(x), y_(y),
+      z_(z), w_(w), h_(h), d_(d) { }
+  AABB (void) : x_(0), y_(0), z_(0), w_(0), h_(0), d_(0) { }
+  AABB (float x, float y, float z) : x_(x), y_(y), z_(z), w_(1), h_(1),
+      d_(1) { }
+  bool Collide(AABB *p) {
     return !((p->x() >= x_ + w_)     // trop à droite
         || (p->x() + p->w() <= x_)   // trop à gauche
         || (p->y() >= y_ + h_)       // trop en bas
@@ -43,6 +53,12 @@ class Rect : public Geometry {
   int LargestDim(void);
   float Volume(void) { return w() * h() * d(); }
   // Accessors
+  float x() { return x_; }
+  float y() { return y_; }
+  float z() { return z_; }
+  void set_x(float x) { x_ = x; }
+  void set_y(float y) { y_ = y; }
+  void set_z(float z) { z_ = z; }
   float w() { return w_; }
   float h() { return h_; }
   float d() { return d_; }
@@ -55,4 +71,4 @@ class Rect : public Geometry {
   }
 };
 
-#endif//__RECT_H__
+#endif//__AABB_H__

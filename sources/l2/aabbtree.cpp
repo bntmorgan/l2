@@ -22,10 +22,10 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 #include <string.h>
 
 #include "aabbtree.h"
-#include "rect.h"
+#include "aabb.h"
 
-static Rect Encompassing(const std::vector<Rect *> &e) {
-  Rect *t;
+static AABB Encompassing(const std::vector<AABB *> &e) {
+  AABB *t;
   int i;
   float min_x = FLT_MAX, max_x = FLT_MIN,
       min_y = FLT_MAX, max_y = FLT_MIN,
@@ -53,17 +53,16 @@ static Rect Encompassing(const std::vector<Rect *> &e) {
       max_z = t->z() + t->d();
     }
   }
-  Rect r(min_x, min_y, min_z, max_x - min_x, max_y - min_y, max_z - min_z);
+  AABB r(min_x, min_y, min_z, max_x - min_x, max_y - min_y, max_z - min_z);
   return r;
 }
 
-static AABBCell *Pass(const std::vector<Rect *> &e, AABBCell *p, int m_depth){
+static AABBCell *Pass(const std::vector<AABB *> &e, AABBCell *p, int m_depth){
   if (e.size() == 0) {
     return NULL;
   }
   AABBCell *c = new AABBCell;
-  memset(c, 0, sizeof(AABBCell));
-  Rect eb = Encompassing(e);
+  AABB eb = Encompassing(e);
   c->parent = p;
   c->e_box = eb;
   c->boxes = e;
@@ -73,7 +72,7 @@ static AABBCell *Pass(const std::vector<Rect *> &e, AABBCell *p, int m_depth){
     return c;
   }
   int ld = eb.LargestDim();
-  std::vector<Rect *> l_child, r_child;
+  std::vector<AABB *> l_child, r_child;
   int i;
   float t;
 //  printf("Depth %d, Ecompassing Box vol %f : ", m_depth, eb.Volume());
