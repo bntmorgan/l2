@@ -131,8 +131,12 @@ static AABBCell *Pass(const std::vector<AABB *> &e, AABBCell *p, int m_depth){
   return c;
 }
 
-AABBTree::AABBTree(const std::vector<Rect *> &e) {
-  root_ = Pass(e, NULL, 10);
+AABBTree::AABBTree(const std::vector<Object*> &e) {
+  int i;
+  for (i = 0; i < e.size(); i++) {
+    world_.push_back(e[i]->b());
+  }
+  root_ = Pass(world_, NULL, 10);
 }
 
 static void Destroy(AABBCell *c) {

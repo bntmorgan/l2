@@ -24,7 +24,7 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
-#include "cube.h"
+#include "object.h"
 #include "player.h"
 #include "pipeline.h"
 #include "math_3d.h"
@@ -43,7 +43,7 @@ class Cube;
 
 class Scene {
  private:
-  std::vector<Cube*> cubes_;
+  std::vector<Object*> cubes_;
   Textures *textures_;
   // Physics
   AABBTree *collider_;
@@ -69,7 +69,7 @@ class Scene {
   void CompileShaders();
   void AddShader(GLuint ShaderProgram, const char* pShaderText,
       GLenum ShaderType);
-  void AddCube(Cube *c);
+  void AddCube(Object *c);
   void Render(void);
   void Physics(void);
   void Dump(void);

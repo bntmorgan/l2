@@ -23,54 +23,23 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "cube.h"
 
-Vertex Cube::vertices_[] = {
-  Vertex(Vector3f(-0.5f,-0.5f,0.5f), Vector2f(0.0,1.0)),
-  Vertex(Vector3f(0.5f,-0.5f,0.5f), Vector2f(1.0,1.0)),
-  Vertex(Vector3f(0.5f,0.5f,0.5f), Vector2f(1.0,0.0)),
-  Vertex(Vector3f(-0.5f,0.5f,0.5f), Vector2f(0.0,0.0)),
-  Vertex(Vector3f(-0.5f,0.5f,-0.5f), Vector2f(0.0,0.0)),
-  Vertex(Vector3f(0.5f,0.5f,-0.5f), Vector2f(1.0,0.0)),
-  Vertex(Vector3f(0.5f,-0.5f,-0.5f), Vector2f(1.0,1.0)),
-  Vertex(Vector3f(-0.5f,-0.5f,-0.5f), Vector2f(0.0,1.0)),
-  Vertex(Vector3f(0.5f,-0.5f,0.5f), Vector2f(0.0,1.0)),
-  Vertex(Vector3f(0.5f,-0.5f,-0.5f), Vector2f(1.0,1.0)),
-  Vertex(Vector3f(0.5f,0.5f,-0.5f), Vector2f(1.0,0.0)),
-  Vertex(Vector3f(0.5f,0.5f,0.5f), Vector2f(0.0,0.0)),
-  Vertex(Vector3f(-0.5f,-0.5f,-0.5f), Vector2f(0.0,1.0)),
-  Vertex(Vector3f(-0.5f,-0.5f,0.5f), Vector2f(1.0,1.0)),
-  Vertex(Vector3f(-0.5f,0.5f,0.5f), Vector2f(1.0,0.0)),
-  Vertex(Vector3f(-0.5f,0.5f,-0.5f), Vector2f(0.0,0.0)),
-  Vertex(Vector3f(-0.5f,0.5f,0.5f), Vector2f(0.0,1.0)),
-  Vertex(Vector3f(0.5f,0.5f,0.5f), Vector2f(1.0,1.0)),
-  Vertex(Vector3f(0.5f,0.5f,-0.5f), Vector2f(1.0,0.0)),
-  Vertex(Vector3f(-0.5f,0.5f,-0.5f), Vector2f(0.0,0.0)),
-  Vertex(Vector3f(-0.5f,-0.5f,-0.5f), Vector2f(0.0,1.0)),
-  Vertex(Vector3f(0.5f,-0.5f,-0.5f), Vector2f(1.0,1.0)),
-  Vertex(Vector3f(0.5f,-0.5f,0.5f), Vector2f(1.0,0.0)),
-  Vertex(Vector3f(-0.5f,-0.5f,0.5f), Vector2f(0.0,0.0))
-};
-
-unsigned int Cube::indices_[] = {
-  0,1,2,3, // side left
-  4,5,6,7, // side right
-  8,9,10,11, // side back
-  12,13,14,15, // side front
-  16,17,18,19, // top
-  20,21,22,23 // bottom
-};
-
-GLuint Cube::vbo_;
-GLuint Cube::ibo_;
-
-void Cube::Render() {
+void Cube::DrawPre(void) {
   glEnableVertexAttribArray(0);
   glEnableVertexAttribArray(1);
 
-  glBindBuffer(GL_ARRAY_BUFFER, Cube::vbo_);
+  glBindBuffer(GL_ARRAY_BUFFER, Graphic::cube_vbo_);
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
   glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
       (const GLvoid*)sizeof(Vector3f));
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo_);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Graphic::cube_ibo_);
+}
+
+void Cube::DrawPost(void) {
+  glDisableVertexAttribArray(0);
+  glEnableVertexAttribArray(1);
+}
+
+void Cube::Draw() {
   // Sides
   t_side_->Bind(GL_TEXTURE0);
   glDrawElements(GL_QUADS, 16, GL_UNSIGNED_INT, 0);
@@ -82,22 +51,4 @@ void Cube::Render() {
   t_top_->Bind(GL_TEXTURE0);
   glDrawElements(GL_QUADS, 4, GL_UNSIGNED_INT, (const GLvoid *)
       (20 * sizeof(unsigned int)));
-
-  glDisableVertexAttribArray(0);
-  glEnableVertexAttribArray(1);
-}
-
-void Cube::InitGL(void) {
-  // Indices
-  glGenBuffers(1, &vbo_);
-  glBindBuffer(GL_ARRAY_BUFFER, vbo_);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_), vertices_, GL_STATIC_DRAW);
-
-  glGenBuffers(1, &ibo_);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo_);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices_), indices_,
-      GL_STATIC_DRAW);
-}
-
-void Cube::DestroyGL(void) {
 }

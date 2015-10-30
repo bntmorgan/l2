@@ -20,17 +20,14 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef __CUBE_H__
 #define __CUBE_H__
 
-#include <GL/glew.h>
-#include <GL/freeglut.h>
 #include <stdio.h>
 
 #include "texture.h"
 #include "graphic.h"
-#include "rect.h"
 
 #include "math_3d.h"
 
-class Cube : public Graphic, public Rect {
+class Cube : public Graphic {
  private:
   // Collided with player
   bool collided_;
@@ -38,26 +35,18 @@ class Cube : public Graphic, public Rect {
   Texture *t_side_;
   Texture *t_top_;
   Texture *t_bottom_;
-  // GL
-  static Vertex vertices_[];
-  static unsigned int indices_[];
-  static GLuint vbo_;
-  static GLuint ibo_;
  public:
-  Cube(float x, float y, float z, Texture *t) : Rect(x, y, z),
-      collided_(false), t_side_(t), t_top_(t), t_bottom_(t) { };
-  Cube(float x, float y, float z, Texture *t_side, Texture *t_top_bottom) :
-      Rect(x, y, z), collided_(false), t_side_(t_side),
-      t_top_(t_top_bottom), t_bottom_(t_top_bottom) { };
-  Cube(float x, float y, float z, Texture *t_side, Texture *t_top,
-      Texture *t_bottom) : Rect(x, y, z), collided_(false),
+  Cube(Texture *t) : collided_(false), t_side_(t), t_top_(t), t_bottom_(t) { };
+  Cube(Texture *t_side, Texture *t_top_bottom) : collided_(false),
+      t_side_(t_side), t_top_(t_top_bottom), t_bottom_(t_top_bottom) { };
+  Cube(Texture *t_side, Texture *t_top, Texture *t_bottom) : collided_(false),
       t_side_(t_side), t_top_(t_top), t_bottom_(t_bottom) { };
-  static void InitGL(void);
-  static void DestroyGL(void);
-  void Render();
+  void Draw(void);
   // Accessors
   void set_collided(bool collided) { collided_ = collided; };
   bool collided(void) { return collided_; };
+  static void DrawPre(void);
+  static void DrawPost(void);
 };
 
 #endif//__CUBE_H__

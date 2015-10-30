@@ -22,20 +22,21 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <vector>
 #include "aabb.h"
+#include "object.h"
 
 struct AABBCell {
   struct AABBCell *l_child; // Children
   struct AABBCell *r_child;
   struct AABBCell *parent; // Parent
   AABB e_box; // Encompassing bounding box
-  std::vector<Rect *> boxes; // Boxes handled by this node
+  std::vector<AABB *> boxes; // Boxes handled by this node
 
   AABBCell(void) : l_child(NULL), r_child(NULL), parent(NULL) { }
 };
 
 class AABBTree {
  public:
-  AABBTree(const std::vector<Rect *> &e);
+  AABBTree(const std::vector<Object *> &e);
   ~AABBTree(void);
  private:
   std::vector<AABB*> world_;

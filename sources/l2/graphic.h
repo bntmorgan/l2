@@ -20,6 +20,9 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef __GRAPHIC_H__
 #define __GRAPHIC_H__
 
+#include <GL/glew.h>
+#include <GL/freeglut.h>
+
 #include "math_3d.h"
 
 struct Vertex {
@@ -36,7 +39,14 @@ struct Vertex {
 
 class Graphic {
  public:
-  virtual void Render(void) = 0;
+  virtual void Draw(void) = 0;
+  // GL
+  static Vertex cube_vertices_[];
+  static unsigned int cube_indices_[];
+  static GLuint cube_vbo_;
+  static GLuint cube_ibo_;
+  static void InitGL(void);
+  static void DestroyGL(void);
 };
 
 #endif//__GRAPHIC_H__

@@ -33,7 +33,7 @@ const char* filename_vs_cube = "sources/l2/shader.vs";
 const char* filename_fs_cube = "sources/l2/shader.fs";
 
 void Scene::CreateAABBTree(void) {
-  std::vector<Rect *> rects(cubes_.begin(), cubes_.end());
+  std::vector<Object *> rects(cubes_.begin(), cubes_.end());
   collider_ = new AABBTree(rects);
 }
 
@@ -42,11 +42,11 @@ Scene::Scene(void) : camera_(Camera(WINDOW_WIDTH, WINDOW_HEIGHT)) {
   textures_ = new Textures;
   // Player
   player_ = new Player(0,  1,  0, textures_->texture("PLAYER"), &camera_);
-  Cube::InitGL();
+  Graphic::InitGL();
 }
 
 Scene::~Scene(void) {
-  Cube::DestroyGL();
+  Graphic::DestroyGL();
   delete collider_;
 }
 
@@ -73,61 +73,34 @@ void Scene::CompileShaders() {
 /**
  * XXX Scene test function
  */
+#define CUBES_NB 6
 Scene *Scene::CreateTestScene(void) {
   Scene *s = new Scene;
+  int i, j;
 
   // Shaders
   s->CompileShaders();
 
   Textures *ts = s->textures();
 
-  s->AddCube(new Cube(0, -1,  0, ts->texture("ROCK_TOP")));
-  s->AddCube(new Cube(0, -1,  1, ts->texture("ROCK_TOP")));
-  s->AddCube(new Cube(1, -1,  0, ts->texture("ROCK_TOP")));
-  s->AddCube(new Cube(1, -1,  1, ts->texture("ROCK_TOP")));
-  s->AddCube(new Cube(0,  0,  0, ts->texture("ROCK_TOP")));
-  s->AddCube(new Cube(0,  0,  1, ts->texture("ROCK_TOP")));
-  s->AddCube(new Cube(1,  0,  0, ts->texture("ROCK_TOP")));
-  s->AddCube(new Cube(1,  0,  1, ts->texture("ROCK_TOP")));
-  s->AddCube(new Cube(-10,  0,  10, ts->texture("ROCK_TOP")));
-
-  // Create test cubes
-  s->AddCube(new Cube(-1,  0,  0, ts->texture("ROCK_TOP")));
-  s->AddCube(new Cube(-2,  0,  0, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
-  s->AddCube(new Cube(-3,  0,  0, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
-  s->AddCube(new Cube( 0,  0,  0, ts->texture("ROCKS")));
-  s->AddCube(new Cube( 1,  0,  0, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
-  s->AddCube(new Cube( 2,  0,  0, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
-  s->AddCube(new Cube( 3,  0,  0, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
-  s->AddCube(new Cube(-1,  0,  1, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
-  s->AddCube(new Cube(-2,  0,  1, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
-  s->AddCube(new Cube(-3,  0,  1, ts->texture("WOOD_SIDE"), ts->texture("WOOD_TOP")));
-  s->AddCube(new Cube( 0,  0,  1, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
-  s->AddCube(new Cube( 1,  0,  1, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
-  s->AddCube(new Cube( 2,  0,  1, ts->texture("WATER_TOP")));
-  s->AddCube(new Cube( 3,  0,  1, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
-  s->AddCube(new Cube(-1,  0, -1, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
-  s->AddCube(new Cube(-2,  0, -1, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
-  s->AddCube(new Cube(-3,  0, -1, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
-  s->AddCube(new Cube( 0,  0, -1, ts->texture("ROCK_TOP")));
-  s->AddCube(new Cube( 1,  0, -1, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
-  s->AddCube(new Cube( 2,  1, -1, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
-  s->AddCube(new Cube( 3,  0, -1, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
-  s->AddCube(new Cube(-1,  0, -2, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
-  s->AddCube(new Cube(-2,  0, -2, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
-  s->AddCube(new Cube(-3,  0, -2, ts->texture("WOOD_SIDE"), ts->texture("WOOD_TOP")));
-  s->AddCube(new Cube( 0,  0, -2, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
-  s->AddCube(new Cube( 1,  0, -2, ts->texture("WATER_TOP")));
-  s->AddCube(new Cube( 2,  0, -2, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
-  s->AddCube(new Cube( 3,  0, -2, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
-  s->AddCube(new Cube(-1,  0,  2, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
-  s->AddCube(new Cube(-2,  0,  2, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
-  s->AddCube(new Cube(-3,  0,  2, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
-  s->AddCube(new Cube( 0,  0,  2, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
-  s->AddCube(new Cube( 1,  0,  2, ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP")));
-  s->AddCube(new Cube( 2,  1,  2, ts->texture("ROCKS")));
-  s->AddCube(new Cube( 3,  0,  2, ts->texture("WATER_TOP")));
-  s->AddCube(new Cube( 3, -1,  2, ts->texture("WOOD_SIDE"), ts->texture("WOOD_TOP")));
+  for (i = -CUBES_NB; i <= CUBES_NB; i++) {
+    for (j = -CUBES_NB; j <= CUBES_NB; j++) {
+      if (i == -CUBES_NB || i == CUBES_NB || j == -CUBES_NB || j == CUBES_NB) {
+        s->AddCube(new Object(new AABB(i,  0,  j),
+            new Cube(ts->texture("ROCKS"))));
+        s->AddCube(new Object(new AABB(i,  1,  j),
+            new Cube(ts->texture("ROCKS"))));
+      }
+      if (i <= -CUBES_NB + 2 || i >= CUBES_NB - 2 ||
+          j <= -CUBES_NB + 2 || j >= CUBES_NB - 2) {
+        s->AddCube(new Object(new AABB(i,  0,  j),
+            new Cube(ts->texture("WATER_TOP"))));
+      } else {
+        s->AddCube(new Object(new AABB(i,  0,  j),
+            new Cube(ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP"))));
+      }
+    }
+  }
 
   // Perspective
   s->g_pers_proj_info()->FOV = 0.0f;
@@ -161,19 +134,23 @@ void Scene::OnMouse(int x, int y) {
   camera_.OnMouse(x, y);
 }
 
-void Scene::AddCube(Cube *c) {
+void Scene::AddCube(Object *c) {
   cubes_.push_back(c);
 }
 
 void Scene::Physics(void) {
   unsigned int i;
+  Cube *c;
   for (i = 0; i < cubes_.size(); i++) {
-    cubes_[i]->set_collided(cubes_[i]->Collide(player_));
+    c = (Cube *)cubes_[i]->g();
+    c->set_collided(cubes_[i]->b()->Collide(player_));
   }
 }
 
 void Scene::Render(void) {
   unsigned int i;
+  Cube *c;
+  AABB *b;
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -187,17 +164,20 @@ void Scene::Render(void) {
   glUniformMatrix4fv(proj_, 1, GL_TRUE, (const GLfloat*)p_.GetOrthoProjTrans());
 
   // Cubes
+  // Cube drawing optimization
+  Cube::DrawPre();
   for (i = 0; i < cubes_.size(); i++) {
-		p_.WorldPos(1.0f * cubes_[i]->x(), 1.0f * cubes_[i]->y(),
-        1.0f * cubes_[i]->z());
-    if (cubes_[i]->collided()) {
+    c = (Cube *)cubes_[i]->g();
+    b = cubes_[i]->b();
+    p_.WorldPos(1.0f * b->x(), 1.0f * b->y(), 1.0f * b->z());
+    if (c->collided()) {
       p_.Scale(1.f, 2.f, 1.f);
     } else {
       p_.Scale(1.f, 1.f, 1.f);
     }
     p_.Rotate(0.f, 0.f, 0.0f);
     glUniformMatrix4fv(world_, 1, GL_TRUE, (const GLfloat*)p_.GetWorldTrans());
-    cubes_[i]->Render();
+    c->Draw();
   }
 
   // Player
@@ -206,15 +186,18 @@ void Scene::Render(void) {
   p_.Rotate(0.f, player_->f(), 0.0f);
   p_.Scale(1.f, 1.f, 1.f);
   glUniformMatrix4fv(world_, 1, GL_TRUE, (const GLfloat*)p_.GetWorldTrans());
-  player_->Render();
+  player_->Draw();
+  Cube::DrawPost();
 
   glutSwapBuffers();
 }
 
 void Scene::Dump(void) {
   unsigned int i;
+  AABB *b;
   for (i = 0; i < cubes_.size(); i++) {
-    cubes_[i]->Dump();
+    b = cubes_[i]->b();
+    b->Dump();
   }
 }
 
