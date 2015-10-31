@@ -67,7 +67,7 @@ void Scene::CompileShaders() {
 /**
  * XXX Scene test function
  */
-#define CUBES_NB 8
+#define CUBES_NB 5
 Scene *Scene::CreateTestScene(void) {
   Scene *s = new Scene;
   int i, j;
@@ -196,6 +196,7 @@ void Scene::Render(void) {
 
   // AABBTree debug
   if (display_collider_) {
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glUniformMatrix4fv(shader_ccube_.view(), 1, GL_TRUE,
         (const GLfloat*)p_.GetViewTrans());
     glUniformMatrix4fv(shader_ccube_.proj(), 1, GL_TRUE,
@@ -206,7 +207,8 @@ void Scene::Render(void) {
       cc = (CCube *)collider_->boxes()[i]->g();
       b = collider_->boxes()[i]->b();
       glUniform4fv(shader_ccube_.color(), 1, (const GLfloat*)cc->color());
-      p_.WorldPos(b->x(), b->y(), b->z());
+      p_.WorldPos(b->x() + (b->w() / 4) * 2 - 0.5, b->y() + (b->h() / 4), b->z() +
+          (b->d() / 4) * 2 - 0.5);
       p_.Scale(b->w(), b->h(), b->d());
       p_.Rotate(0.f, 0.f, 0.0f);
       glUniformMatrix4fv(shader_ccube_.world(), 1, GL_TRUE,
@@ -214,6 +216,7 @@ void Scene::Render(void) {
       cc->Draw();
     }
     CCube::DrawPost();
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   }
 
   glutSwapBuffers();

@@ -28,9 +28,9 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 static AABB Encompassing(const std::vector<AABB *> &e) {
   AABB *t;
   int i;
-  float min_x = FLT_MAX, max_x = FLT_MIN,
-      min_y = FLT_MAX, max_y = FLT_MIN,
-      min_z = FLT_MAX, max_z = FLT_MIN;
+  float min_x = FLT_MAX, max_x = -FLT_MAX,
+      min_y = FLT_MAX, max_y = -FLT_MAX,
+      min_z = FLT_MAX, max_z = -FLT_MAX;
   for (i = 0, t = e[i]; i < e.size(); i++, t = e[i]) {
     // X
     if (t->x() < min_x) {
@@ -67,10 +67,15 @@ AABBCell *AABBTree::Pass(const std::vector<AABB *> &e, AABBCell *p, int depth) {
   c->parent = p;
   c->e_box = eb;
   c->boxes = e;
+//  printf("Depth %d, Ecompassing Box vol %.3f : ", depth, eb.Volume());
+//  eb.Dump();
   // Add it into the debug boxes
-  Vector4f color(1.f - (0.05f * depth), 0.f, 0.05f * depth, 0.5f);
-  boxes_.push_back(new Object(&c->e_box, new CCube(color)));
-  if (e.size() == 1 || depth == max_depth_) {
+  if (depth == 7 || true) {
+    Vector4f color(1.f - (0.05f * depth), 0.f, 0.05f * depth, 0.5f);
+    boxes_.push_back(new Object(&c->e_box, new CCube(color)));
+  }
+  if (e.size() == 1 || depth == max_depth_ || (eb.w() <= 1.f && eb.h() <= 1.f &&
+        eb.d() <= 1.f)) {
 //    printf("A leaf : ");
 //    e[0]->Dump();
     return c;
@@ -79,8 +84,6 @@ AABBCell *AABBTree::Pass(const std::vector<AABB *> &e, AABBCell *p, int depth) {
   std::vector<AABB *> l_child, r_child;
   int i;
   float t;
-//  printf("Depth %d, Ecompassing Box vol %f : ", m_depth, eb.Volume());
-//  eb.Dump();
 //  printf("Largest Dimension i: %d\n", ld);
   // Compute the threshold value for current dimension
   switch (ld) {
@@ -101,21 +104,21 @@ AABBCell *AABBTree::Pass(const std::vector<AABB *> &e, AABBCell *p, int depth) {
   for (i = 0; i < e.size(); i++) {
     switch (ld) {
       case AXIS_X:
-        if (e[i]->x() + e[i]->w() / 2 < t) {
+        if (e[i]->x() + e[i]->w() <= t) {
           l_child.push_back(e[i]);
         } else {
           r_child.push_back(e[i]);
         }
         break;
       case AXIS_Y:
-        if (e[i]->y() + e[i]->h() / 2 < t) {
+        if (e[i]->y() + e[i]->h() <= t) {
           l_child.push_back(e[i]);
         } else {
           r_child.push_back(e[i]);
         }
         break;
       case AXIS_Z:
-        if (e[i]->z() + e[i]->d() / 2 < t) {
+        if (e[i]->z() + e[i]->d() <= t) {
           l_child.push_back(e[i]);
         } else {
           r_child.push_back(e[i]);

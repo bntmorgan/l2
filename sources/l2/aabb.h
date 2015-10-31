@@ -66,8 +66,8 @@ class AABB {
   void set_h(float h) { h_ = h; }
   void set_d(float d) { d_ = d; }
   void Dump(void) {
-    printf("x(%f), y(%f), z(%f), w(%f), h(%f), d(%f)\n", x(), y(), z(), w(),
-        h(), d());
+    printf("x(%.3f), y(%.3f), z(%.3f), w(%.3f), h(%.3f), d(%.3f)\n", x(), y(),
+        z(), w(), h(), d());
   }
 };
 
