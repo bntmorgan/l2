@@ -185,7 +185,7 @@ int main(int argc, char *argv[]) {
   glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
   // glutGameModeString("1014x768@32");
   // glutEnterGameMode();
-  glutInitWindowPosition(100, 100);
+  glutInitWindowPosition(40, 21);
   glutCreateWindow("Landstalker 2");
 
   glutDisplayFunc(RenderSceneCB);
