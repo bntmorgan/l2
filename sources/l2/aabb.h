@@ -56,6 +56,9 @@ class AABB {
   float x() { return x_; }
   float y() { return y_; }
   float z() { return z_; }
+  float glx() { return x_ + w_ / 2 - 0.5; }
+  float gly() { return y_ + h_ / 2 - 0.5; }
+  float glz() { return z_ + d_ / 2 - 0.5; }
   void set_x(float x) { x_ = x; }
   void set_y(float y) { y_ = y; }
   void set_z(float z) { z_ = z; }
