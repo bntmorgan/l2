@@ -37,10 +37,10 @@ class AABB {
   float h_;
   float d_;
  public:
-  AABB (float x, float y, float z, float w, float h, float d) : x_(x), y_(y),
+  AABB(float x, float y, float z, float w, float h, float d) : x_(x), y_(y),
       z_(z), w_(w), h_(h), d_(d) { }
-  AABB (void) : x_(0), y_(0), z_(0), w_(0), h_(0), d_(0) { }
-  AABB (float x, float y, float z) : x_(x), y_(y), z_(z), w_(1), h_(1),
+  AABB(void) : x_(0), y_(0), z_(0), w_(0), h_(0), d_(0) { }
+  AABB(float x, float y, float z) : x_(x), y_(y), z_(z), w_(1), h_(1),
       d_(1) { }
   bool Collide(AABB *p) {
     return !((p->x() >= x_ + w_)     // trop à droite
