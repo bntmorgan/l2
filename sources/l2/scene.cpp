@@ -171,7 +171,7 @@ void Scene::Render(void) {
     for (i = 0; i < cubes_.size(); i++) {
       tc = (TCube *)cubes_[i]->g();
       b = cubes_[i]->b();
-      p_.WorldPos(1.0f * b->x(), 1.0f * b->y(), 1.0f * b->z());
+      p_.WorldPos(b->glx(), b->gly(), b->glz());
       if (tc->collided()) {
         p_.Scale(1.f, 2.f, 1.f);
       } else {
@@ -207,8 +207,7 @@ void Scene::Render(void) {
       cc = (CCube *)collider_->boxes()[i]->g();
       b = collider_->boxes()[i]->b();
       glUniform4fv(shader_ccube_.color(), 1, (const GLfloat*)cc->color());
-      p_.WorldPos(b->x() + (b->w() / 4) * 2 - 0.5, b->y() + (b->h() / 4), b->z() +
-          (b->d() / 4) * 2 - 0.5);
+      p_.WorldPos(b->glx(), b->gly(), b->glz());
       p_.Scale(b->w(), b->h(), b->d());
       p_.Rotate(0.f, 0.f, 0.0f);
       glUniformMatrix4fv(shader_ccube_.world(), 1, GL_TRUE,

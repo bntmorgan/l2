@@ -70,10 +70,10 @@ AABBCell *AABBTree::Pass(const std::vector<AABB *> &e, AABBCell *p, int depth) {
 //  printf("Depth %d, Ecompassing Box vol %.3f : ", depth, eb.Volume());
 //  eb.Dump();
   // Add it into the debug boxes
-  if (depth == 7 || true) {
+  // if (depth == 0) {
     Vector4f color(1.f - (0.05f * depth), 0.f, 0.05f * depth, 0.5f);
     boxes_.push_back(new Object(&c->e_box, new CCube(color)));
-  }
+  // }
   if (e.size() == 1 || depth == max_depth_ || (eb.w() <= 1.f && eb.h() <= 1.f &&
         eb.d() <= 1.f)) {
 //    printf("A leaf : ");
