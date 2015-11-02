@@ -82,15 +82,17 @@ OGLDEV_KEY GLUTKeyToOGLDEVKey(uint Key)
 }
 
 Scene *s;
-Gamepad *g;
+Gamepad *g = NULL;
 
 static void RenderSceneCB(void) {
-  g->Update();
-  int event = g->event();
-  g->Clear();
-  if (event == JS_EVENT_AXIS) {
-    // g->Dump();
-    s->OnJoystickAxis(g->l(), g->r());
+  if (g != NULL) {
+    g->Update();
+    int event = g->event();
+    g->Clear();
+    if (event == JS_EVENT_AXIS) {
+      // g->Dump();
+      s->OnJoystickAxis(g->l(), g->r());
+    }
   }
   s->Physics();
   s->Render();
@@ -220,7 +222,13 @@ int main(int argc, char *argv[]) {
   }
 
   // Gamepad object
-  g = new Gamepad("/dev/input/js1");
+  try {
+    g = new Gamepad("/dev/input/js1");
+  } catch (GamepadException const &e) {
+    printf("Disabling gamepad\n");
+    delete g;
+    g = NULL;
+  }
 
   // Create a test scene
   s = Scene::CreateTestScene();

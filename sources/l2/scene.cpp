@@ -46,6 +46,7 @@ Scene::Scene(void) : camera_(Camera(WINDOW_WIDTH, WINDOW_HEIGHT)) {
   player_ = new Player(0,  1,  0, textures_->texture("PLAYER"), &camera_);
   Graphic::InitGL();
   display_collider_ = false;
+  display_collider_search_ = false;
 }
 
 Scene::~Scene(void) {
@@ -115,6 +116,9 @@ void Scene::OnKeyboard(int key) {
   if (key == OGLDEV_KEY_d) {
     display_collider_ = !display_collider_;
   }
+  if (key == OGLDEV_KEY_s) {
+    display_collider_search_ = !display_collider_search_;
+  }
   if (key == OGLDEV_KEY_q) {
     exit(0);
   }
@@ -142,6 +146,9 @@ void Scene::Physics(void) {
     c = (TCube *)cubes_[i]->g();
     c->set_collided(cubes_[i]->b()->Collide(player_));
   }
+  // Test search fonction
+  std::vector<AABB*> res;
+  collider_->Search(&res, player_);
 }
 
 void Scene::Render(void) {
@@ -203,9 +210,11 @@ void Scene::Render(void) {
         (const GLfloat*)p_.GetOrthoProjTrans());
     shader_ccube_.Use();
     CCube::DrawPre();
-    for (i = 0; i < collider_->boxes().size(); i++) {
-      cc = (CCube *)collider_->boxes()[i]->g();
-      b = collider_->boxes()[i]->b();
+    const std::vector<Object *> &bx = (display_collider_search_) ?
+        collider_->boxes_search() : collider_->boxes();
+    for (i = 0; i < bx.size(); i++) {
+      cc = (CCube *)bx[i]->g();
+      b = bx[i]->b();
       glUniform4fv(shader_ccube_.color(), 1, (const GLfloat*)cc->color());
       p_.WorldPos(b->glx(), b->gly(), b->glz());
       p_.Scale(b->w(), b->h(), b->d());

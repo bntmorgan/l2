@@ -20,6 +20,7 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 #include <float.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stack>
 
 #include "aabbtree.h"
 #include "aabb.h"
@@ -67,25 +68,18 @@ AABBCell *AABBTree::Pass(const std::vector<AABB *> &e, AABBCell *p, int depth) {
   c->parent = p;
   c->e_box = eb;
   c->boxes = e;
-//  printf("Depth %d, Ecompassing Box vol %.3f : ", depth, eb.Volume());
-//  eb.Dump();
   // Add it into the debug boxes
-  // if (depth == 0) {
-    Vector4f color(1.f - (0.05f * depth), 0.f, 0.05f * depth, 0.5f);
-    boxes_.push_back(new Object(&c->e_box, new CCube(color)));
-  // }
+  Vector4f color(1.f - (0.05f * depth), 0.f, 0.05f * depth, 0.5f);
+  boxes_.push_back(new Object(&c->e_box, new CCube(color)));
+  // XXX Maybe modify the stop condition
   if (e.size() == 1 || depth == max_depth_ || (eb.w() <= 1.f && eb.h() <= 1.f &&
         eb.d() <= 1.f)) {
-//    printf("A leaf : ");
-//    e[0]->Dump();
     return c;
   }
   int ld = eb.LargestDim();
   std::vector<AABB *> l_child, r_child;
   int i;
   float t;
-//  printf("Largest Dimension i: %d\n", ld);
-  // Compute the threshold value for current dimension
   switch (ld) {
     case AXIS_X:
       t = eb.x() + eb.w() / 2;
@@ -129,9 +123,6 @@ AABBCell *AABBTree::Pass(const std::vector<AABB *> &e, AABBCell *p, int depth) {
         exit(1);
     }
   }
-  // Display pass info
-//  printf("Right popuplation(%lu), left population(%lu)\n", l_child.size(),
-//      r_child.size());
   // Recursive call
   c->l_child = Pass(l_child, c, depth + 1);
   c->r_child = Pass(r_child, c, depth + 1);
@@ -158,4 +149,36 @@ static void Destroy(AABBCell *c) {
 
 AABBTree::~AABBTree(void) {
   Destroy(root_);
+}
+
+void AABBTree::Search(std::vector<AABB*> *matches, AABB *e) {
+  AABBCell *c;
+  int i;
+  std::stack<struct AABBCell*> dfs;
+  dfs.push(root_);
+  // Empty the last boxex_search
+  for (i = 0; i < boxes_search_.size(); i++) {
+    delete boxes_search_[i]->g();
+    delete boxes_search_[i];
+  }
+  boxes_search_.clear();
+  while (dfs.size() > 0) { // If zero there is no more children to process
+    c = dfs.top();
+    dfs.pop();
+    if (!c->e_box.Collide(e)) {
+      continue;
+    }
+    Vector4f color(0.5f, 0.5f, 0.05f, 0.5f);
+    boxes_search_.push_back(new Object(&c->e_box, new CCube(color)));
+    if (c->l_child != NULL) {
+      dfs.push(c->l_child);
+    }
+    if (c->r_child != NULL) {
+      dfs.push(c->r_child);
+    }
+    if (c->l_child != NULL && c->r_child != NULL) {
+      // Add it the results this is a leaf
+      matches->push_back(&c->e_box);
+    }
+  }
 }

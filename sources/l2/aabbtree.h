@@ -39,11 +39,15 @@ class AABBTree {
   AABBTree(const std::vector<Object *> &e, unsigned int max_depth);
   ~AABBTree(void);
   const std::vector<Object*> &boxes(void) { return boxes_; }
+  const std::vector<Object*> &boxes_search(void) { return boxes_search_; }
+  void Search(std::vector<AABB*> *matches, AABB *e);
  private:
   std::vector<AABB*> world_;
   std::vector<Object*> boxes_;
+  std::vector<Object*> boxes_search_;
   unsigned int max_depth_;
   struct AABBCell *root_;
+  // TODO We need to work with Object class now
   AABBCell *Pass(const std::vector<AABB *> &e, AABBCell *p, int depth);
 };
 

@@ -46,6 +46,7 @@ class Cube;
 class Scene {
  private:
   bool display_collider_;
+  bool display_collider_search_;
   std::vector<Object*> cubes_;
   Textures *textures_;
   // Physics

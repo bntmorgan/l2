@@ -30,7 +30,7 @@ Gamepad::Gamepad(std::string f) {
   fd_ = open(f.c_str(),  O_RDONLY | O_NONBLOCK);
   if (fd_ == -1) {
     perror("Error while openning the gamepad device");
-    exit(-1);
+    throw GamepadException(1, "Error while openning the gamepad device");
   }
 }
 

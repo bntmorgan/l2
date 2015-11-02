@@ -29,6 +29,17 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 #define GAMEPAD_AXIS_MAX 32767.0
 #define GAMEPAD_AXIS_DEAD_ZONE 6000
 
+class GamepadException : public std::exception {
+ private:
+  int code_;
+  std::string msg_;
+ public:
+  GamepadException(int code, const std::string &msg) : code_(code), msg_(msg) { }
+  const std::string &msg(void) { return msg_; }
+  int code(void) { return code_; }
+  virtual ~GamepadException() throw() {}
+};
+
 enum gamepad_button {
   GAMEPAD_BUTTON_A,
   GAMEPAD_BUTTON_X,

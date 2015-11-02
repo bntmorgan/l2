@@ -40,6 +40,7 @@ struct Vertex {
 class Graphic {
  public:
   virtual void Draw(void) = 0;
+  virtual ~Graphic(void) {};
   // GL
   static Vertex cube_vertices_[];
   static Vector3f ccube_vertices_[];
