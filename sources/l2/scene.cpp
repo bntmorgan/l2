@@ -147,7 +147,7 @@ void Scene::Physics(void) {
     c->set_collided(cubes_[i]->b()->Collide(player_));
   }
   // Test search fonction
-  std::vector<AABB*> res;
+  std::vector<Object*> res;
   collider_->Search(&res, player_);
 }
 

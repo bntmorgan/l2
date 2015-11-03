@@ -29,7 +29,7 @@ struct AABBCell {
   struct AABBCell *r_child;
   struct AABBCell *parent; // Parent
   AABB e_box; // Encompassing bounding box
-  std::vector<AABB *> boxes; // Boxes handled by this node
+  std::vector<Object*> boxes; // Boxes handled by this node
 
   AABBCell(void) : l_child(NULL), r_child(NULL), parent(NULL) { }
 };
@@ -40,15 +40,14 @@ class AABBTree {
   ~AABBTree(void);
   const std::vector<Object*> &boxes(void) { return boxes_; }
   const std::vector<Object*> &boxes_search(void) { return boxes_search_; }
-  void Search(std::vector<AABB*> *matches, AABB *e);
+  void Search(std::vector<Object*> *matches, AABB *e);
  private:
-  std::vector<AABB*> world_;
-  std::vector<Object*> boxes_;
-  std::vector<Object*> boxes_search_;
+  std::vector<Object*> world_; // Objects handled by the tree
+  std::vector<Object*> boxes_; // Graphical display of the tree
+  std::vector<Object*> boxes_search_; // Graphical display of the search
   unsigned int max_depth_;
   struct AABBCell *root_;
-  // TODO We need to work with Object class now
-  AABBCell *Pass(const std::vector<AABB *> &e, AABBCell *p, int depth);
+  AABBCell *Pass(const std::vector<Object *> &e, AABBCell *p, int depth);
 };
 
 #endif//__AABBTREE_H__

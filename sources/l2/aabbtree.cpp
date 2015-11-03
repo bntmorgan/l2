@@ -26,13 +26,14 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 #include "aabb.h"
 #include "ccube.h"
 
-static AABB Encompassing(const std::vector<AABB *> &e) {
+static AABB Encompassing(const std::vector<Object*> &e) {
   AABB *t;
   int i;
   float min_x = FLT_MAX, max_x = -FLT_MAX,
       min_y = FLT_MAX, max_y = -FLT_MAX,
       min_z = FLT_MAX, max_z = -FLT_MAX;
-  for (i = 0, t = e[i]; i < e.size(); i++, t = e[i]) {
+  for (i = 0; i < e.size(); i++) {
+    t = e[i]->b();
     // X
     if (t->x() < min_x) {
       min_x = t->x();
@@ -59,12 +60,13 @@ static AABB Encompassing(const std::vector<AABB *> &e) {
   return r;
 }
 
-AABBCell *AABBTree::Pass(const std::vector<AABB *> &e, AABBCell *p, int depth) {
+AABBCell *AABBTree::Pass(const std::vector<Object*> &e, AABBCell *p,
+    int depth){
   if (e.size() == 0) {
     return NULL;
   }
   AABBCell *c = new AABBCell;
-  AABB eb = Encompassing(e);
+  AABB eb = Encompassing(e), *cb;
   c->parent = p;
   c->e_box = eb;
   c->boxes = e;
@@ -77,7 +79,7 @@ AABBCell *AABBTree::Pass(const std::vector<AABB *> &e, AABBCell *p, int depth) {
     return c;
   }
   int ld = eb.LargestDim();
-  std::vector<AABB *> l_child, r_child;
+  std::vector<Object*> l_child, r_child;
   int i;
   float t;
   switch (ld) {
@@ -96,23 +98,24 @@ AABBCell *AABBTree::Pass(const std::vector<AABB *> &e, AABBCell *p, int depth) {
   }
   // Compute left and right child
   for (i = 0; i < e.size(); i++) {
+    cb = e[i]->b();
     switch (ld) {
       case AXIS_X:
-        if (e[i]->x() + e[i]->w() <= t) {
+        if (cb->x() + cb->w() <= t) {
           l_child.push_back(e[i]);
         } else {
           r_child.push_back(e[i]);
         }
         break;
       case AXIS_Y:
-        if (e[i]->y() + e[i]->h() <= t) {
+        if (cb->y() + cb->h() <= t) {
           l_child.push_back(e[i]);
         } else {
           r_child.push_back(e[i]);
         }
         break;
       case AXIS_Z:
-        if (e[i]->z() + e[i]->d() <= t) {
+        if (cb->z() + cb->d() <= t) {
           l_child.push_back(e[i]);
         } else {
           r_child.push_back(e[i]);
@@ -132,8 +135,9 @@ AABBCell *AABBTree::Pass(const std::vector<AABB *> &e, AABBCell *p, int depth) {
 AABBTree::AABBTree(const std::vector<Object*> &e, unsigned int max_depth) :
     max_depth_(max_depth) {
   int i;
+  // We copy the vector of objects
   for (i = 0; i < e.size(); i++) {
-    world_.push_back(e[i]->b());
+    world_.push_back(e[i]);
   }
   root_ = Pass(world_, NULL, 0);
 }
@@ -151,7 +155,7 @@ AABBTree::~AABBTree(void) {
   Destroy(root_);
 }
 
-void AABBTree::Search(std::vector<AABB*> *matches, AABB *e) {
+void AABBTree::Search(std::vector<Object*> *matches, AABB *e) {
   AABBCell *c;
   int i;
   std::stack<struct AABBCell*> dfs;
@@ -178,7 +182,9 @@ void AABBTree::Search(std::vector<AABB*> *matches, AABB *e) {
     }
     if (c->l_child != NULL && c->r_child != NULL) {
       // Add it the results this is a leaf
-      matches->push_back(&c->e_box);
+      for (i = 0; i < c->boxes.size(); i++) {
+        matches->push_back(c->boxes[i]);
+      }
     }
   }
 }
