@@ -86,13 +86,15 @@ Scene *Scene::CreateTestScene(void) {
         s->AddCube(new Object(new AABB(i,  1,  j),
             new TCube(ts->texture("ROCKS"))));
       }
-      if (i <= -CUBES_NB + 2 || i >= CUBES_NB - 2 ||
-          j <= -CUBES_NB + 2 || j >= CUBES_NB - 2) {
-        s->AddCube(new Object(new AABB(i,  0,  j),
-            new TCube(ts->texture("WATER_TOP"))));
-      } else {
-        s->AddCube(new Object(new AABB(i,  0,  j),
-            new TCube(ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP"))));
+      if (i > -CUBES_NB && i < CUBES_NB && j > -CUBES_NB && j < CUBES_NB){
+        if (i <= -CUBES_NB + 2 || i >= CUBES_NB - 2 ||
+            j <= -CUBES_NB + 2 || j >= CUBES_NB - 2){
+          s->AddCube(new Object(new AABB(i,  0,  j),
+                new TCube(ts->texture("WATER_TOP"))));
+        } else {
+          s->AddCube(new Object(new AABB(i,  0,  j),
+                new TCube(ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP"))));
+        }
       }
     }
   }
@@ -140,15 +142,20 @@ void Scene::AddCube(Object *c) {
 }
 
 void Scene::Physics(void) {
+  static std::vector<Object*> res;
   unsigned int i;
   TCube *c;
-  for (i = 0; i < cubes_.size(); i++) {
-    c = (TCube *)cubes_[i]->g();
-    c->set_collided(cubes_[i]->b()->Collide(player_));
+  for (i = 0; i < res.size(); i++) {
+    c = (TCube *)res[i]->g();
+    c->set_collided(false);
   }
+  res.clear();
   // Test search fonction
-  std::vector<Object*> res;
   collider_->Search(&res, player_);
+  for (i = 0; i < res.size(); i++) {
+    c = (TCube *)res[i]->g();
+    c->set_collided(true);
+  }
 }
 
 void Scene::Render(void) {
@@ -223,8 +230,24 @@ void Scene::Render(void) {
           (const GLfloat*)p_.GetWorldTrans());
       cc->Draw();
     }
-    CCube::DrawPost();
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    // Search result
+    if (display_collider_search_) {
+      const std::vector<Object *> &rbx = collider_->boxes_result();
+      for (i = 0; i < rbx.size(); i++) {
+        cc = (CCube *)rbx[i]->g();
+        b = rbx[i]->b();
+        glUniform4fv(shader_ccube_.color(), 1, (const GLfloat*)cc->color());
+        p_.WorldPos(b->glx(), b->gly(), b->glz());
+        p_.Scale(b->w(), b->h(), b->d());
+        p_.Rotate(0.f, 0.f, 0.0f);
+        glUniformMatrix4fv(shader_ccube_.world(), 1, GL_TRUE,
+            (const GLfloat*)p_.GetWorldTrans());
+        cc->Draw();
+      }
+    }
+    CCube::DrawPost();
+
   }
 
   glutSwapBuffers();

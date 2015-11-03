@@ -166,6 +166,7 @@ void AABBTree::Search(std::vector<Object*> *matches, AABB *e) {
     delete boxes_search_[i];
   }
   boxes_search_.clear();
+  boxes_result_.clear();
   while (dfs.size() > 0) { // If zero there is no more children to process
     c = dfs.top();
     dfs.pop();
@@ -180,10 +181,12 @@ void AABBTree::Search(std::vector<Object*> *matches, AABB *e) {
     if (c->r_child != NULL) {
       dfs.push(c->r_child);
     }
-    if (c->l_child != NULL && c->r_child != NULL) {
+    if (c->l_child == NULL && c->r_child == NULL) {
       // Add it the results this is a leaf
       for (i = 0; i < c->boxes.size(); i++) {
         matches->push_back(c->boxes[i]);
+        Vector4f color(0.f, 0.f, 1.f, 0.5f);
+        boxes_result_.push_back(new Object(&c->e_box, new CCube(color)));
       }
     }
   }

@@ -38,13 +38,15 @@ class AABBTree {
  public:
   AABBTree(const std::vector<Object *> &e, unsigned int max_depth);
   ~AABBTree(void);
-  const std::vector<Object*> &boxes(void) { return boxes_; }
-  const std::vector<Object*> &boxes_search(void) { return boxes_search_; }
+  const std::vector<Object*> boxes(void) { return boxes_; }
+  const std::vector<Object*> boxes_search(void) { return boxes_search_; }
+  const std::vector<Object*> boxes_result(void) { return boxes_result_; }
   void Search(std::vector<Object*> *matches, AABB *e);
  private:
   std::vector<Object*> world_; // Objects handled by the tree
   std::vector<Object*> boxes_; // Graphical display of the tree
   std::vector<Object*> boxes_search_; // Graphical display of the search
+  std::vector<Object*> boxes_result_; // Graphical display of the search
   unsigned int max_depth_;
   struct AABBCell *root_;
   AABBCell *Pass(const std::vector<Object *> &e, AABBCell *p, int depth);
