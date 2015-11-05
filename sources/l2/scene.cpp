@@ -47,10 +47,15 @@ Scene::Scene(void) : camera_(Camera(WINDOW_WIDTH, WINDOW_HEIGHT)) {
   Graphic::InitGL();
   display_collider_ = false;
   display_collider_search_ = false;
+  Vector4f color(1.f, 0, 0, 0.5f);
+  move_box_ = new Object(new AABB(), new CCube(color));
 }
 
 Scene::~Scene(void) {
   Graphic::DestroyGL();
+  delete move_box_->g();
+  delete move_box_->b();
+  delete move_box_;
   delete collider_;
 }
 
@@ -151,7 +156,13 @@ void Scene::Physics(void) {
   }
   res.clear();
   // Test search fonction
-  collider_->Search(&res, player_);
+  // Create AABB Player movement box
+  Vector3f np = player_->NextPosition();
+  AABB *eb = move_box_->b();
+  AABB npb(np.x, np.y, np.z, player_->w(), player_->h(),
+      player_->d());
+  player_->Encompassing(eb, &npb);
+  collider_->Search(&res, eb);
   for (i = 0; i < res.size(); i++) {
     c = (TCube *)res[i]->g();
     c->set_collided(true);
@@ -245,6 +256,16 @@ void Scene::Render(void) {
             (const GLfloat*)p_.GetWorldTrans());
         cc->Draw();
       }
+      // Draw player moving Box
+      cc = (CCube *)move_box_->g();
+      b = move_box_->b();
+      glUniform4fv(shader_ccube_.color(), 1, (const GLfloat*)cc->color());
+      p_.WorldPos(b->glx(), b->gly(), b->glz());
+      p_.Scale(b->w(), b->h(), b->d());
+      p_.Rotate(0.f, 0.f, 0.0f);
+      glUniformMatrix4fv(shader_ccube_.world(), 1, GL_TRUE,
+          (const GLfloat*)p_.GetWorldTrans());
+      cc->Draw();
     }
     CCube::DrawPost();
 

@@ -36,6 +36,7 @@ class Player: public AABB, public TCube {
  public:
   Player(float x, float y, float z, Texture *t, Camera *c) : AABB(x, y, z),
       TCube(t), f_(0), camera_(c), m_pm(0, 0, 0) { };
+  Vector3f NextPosition(void);
   void OnJoystick(Vector2f l, Vector2f r);
   void Update(void);
   float f(void) { return f_; }

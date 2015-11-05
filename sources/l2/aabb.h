@@ -72,6 +72,7 @@ class AABB {
     printf("x(%.3f), y(%.3f), z(%.3f), w(%.3f), h(%.3f), d(%.3f)\n", x(), y(),
         z(), w(), h(), d());
   }
+  void Encompassing(AABB *out, AABB *b);
 };
 
 #endif//__AABB_H__

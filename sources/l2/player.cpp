@@ -34,12 +34,21 @@ void Player::OnJoystick(Vector2f l, Vector2f r) {
   m_pm.z = l.y;
 }
 
-void Player::Update(void) {
+Vector3f Player::NextPosition(void) {
+  Vector3f np(0, 0, 0);
   const Vector3f Vaxis(0.0f, 1.0f, 0.0f);
   // Position move
   Vector3f pm = m_pm;
   // We consider (0, 1, 0) as the origin
   pm.Rotate(camera_->GetAngleH() + 90, Vaxis);
-  x_ += pm.x / 10;
-  z_ += pm.z / 10;
+  np.x = x_ + pm.x / 10;
+  np.z = z_ + pm.z / 10;
+  np.y = y_;
+  return np;
+}
+
+void Player::Update(void) {
+  Vector3f np = NextPosition();
+  x_ = np.x;
+  z_ = np.z;
 }

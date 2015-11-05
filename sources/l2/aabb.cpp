@@ -31,3 +31,15 @@ int AABB::LargestDim(void) {
   }
   return i;
 }
+
+void AABB::Encompassing(AABB *out, AABB *b) {
+  out->set_x((x() < b->x()) ? x() : b->x());
+  out->set_y((y() < b->y()) ? y() : b->y());
+  out->set_z((z() < b->z()) ? z() : b->z());
+  out->set_w(((x() + w() > b->x() + b->w()) ? x() + w() : b->x() + b->w()) -
+      out->x());
+  out->set_h(((y() + h() > b->y() + b->h()) ? y() + h() : b->y() + b->h()) -
+      out->y());
+  out->set_d(((z() + d() > b->z() + b->d()) ? z() + d() : b->z() + b->d()) -
+      out->z());
+}
