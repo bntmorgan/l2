@@ -166,9 +166,11 @@ Vector3f Min3(float x, float y, float z) {
 
 void Scene::Physics(void) {
   static std::vector<Object*> res;
-  unsigned int i;
+  bool swap = true;
+  Object *t;
+  int i;
   TCube *c;
-  AABB *cb; // collided box
+  AABB *cb, *cb1; // collided box
   for (i = 0; i < res.size(); i++) {
     c = (TCube *)res[i]->g();
     c->set_collided(false);
@@ -183,6 +185,24 @@ void Scene::Physics(void) {
       player_->d());
   player_->Encompassing(eb, &npb);
   collider_->Search(&res, eb);
+  // Sort the collisions by increasing distance closer collision first will
+  // maybe delete farther collision
+  if (res.size() > 0) {
+    // XXX Other stuff than bubble sort
+    while (swap) {
+      swap = false;
+      for (i = 0; i < res.size() - 1; i++) {
+        cb = res[i]->b();
+        cb1 = res[i + 1]->b();
+        if (cb->Distance(player_) > cb1->Distance(player_)) {
+          swap = true;
+          t = res[i + 1];
+          res[i + 1] = res[i];
+          res[i] = t;
+        }
+      }
+    }
+  }
   for (i = 0; i < res.size(); i++) {
     c = (TCube *)res[i]->g();
     c->set_collided(true);

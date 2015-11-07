@@ -22,6 +22,8 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <stdio.h>
 
+#include "math_3d.h"
+
 enum Axis {
   AXIS_X,
   AXIS_Y,
@@ -73,6 +75,8 @@ class AABB {
         z(), w(), h(), d());
   }
   void Encompassing(AABB *out, AABB *b);
+  Vector3f Center(void);
+  float Distance(AABB *o);
 };
 
 #endif//__AABB_H__

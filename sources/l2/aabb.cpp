@@ -43,3 +43,14 @@ void AABB::Encompassing(AABB *out, AABB *b) {
   out->set_d(((z() + d() > b->z() + b->d()) ? z() + d() : b->z() + b->d()) -
       out->z());
 }
+
+Vector3f AABB::Center(void) {
+  return Vector3f(x() + w() / 2, y() + h() / 2, z() + d() / 2);
+}
+
+#define POW2(x) ((x) * (x))
+
+float AABB::Distance(AABB *o) {
+  Vector3f a = Center(), b = o->Center();
+  return sqrt(POW2(a.x - b.x) + POW2(a.y - b.y) + POW2(a.z - b.z));
+}

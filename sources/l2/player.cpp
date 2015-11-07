@@ -32,7 +32,7 @@ void Player::OnJoystick(Vector2f l, Vector2f r) {
   }
   // Moving speed
   m_pm.x = -l.x * PLAYER_SPEED;
-  m_pm.y = 1.;
+  m_pm.y = 0.;
   m_pm.z = l.y * PLAYER_SPEED;
   // We consider (0, 1, 0) as the origin
   m_pm.Rotate(camera_->GetAngleH() + 90, Vaxis);
