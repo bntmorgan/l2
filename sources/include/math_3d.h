@@ -125,7 +125,7 @@ struct Vector3f
 
     void Print() const
     {
-        printf("(%.02f, %.02f, %.02f)", x, y, z);
+        printf("(%.03f, %.03f, %.03f)", x, y, z);
     }
 };
 
