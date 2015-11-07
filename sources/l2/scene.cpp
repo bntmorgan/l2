@@ -174,9 +174,9 @@ void Scene::Physics(void) {
     c->set_collided(false);
   }
   res.clear();
-  // Test search fonction
-  // Create AABB Player movement box
+  // XXX : Recover the motion given by the joystick
   player_->set_pm(original_pm_);
+  // Create AABB Player movement box
   Vector3f np = player_->NextPosition();
   AABB *eb = move_box_->b();
   AABB npb(np.x, np.y, np.z, player_->w(), player_->h(),

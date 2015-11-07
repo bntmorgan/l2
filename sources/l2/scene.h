@@ -61,6 +61,7 @@ class Scene {
   // Player
   Player *player_;
   Object *move_box_;
+  // XXX Motion beforce collision
   Vector3f original_pm_;
   // Opengl
   ShaderTCube shader_tcube_;
