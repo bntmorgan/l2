@@ -20,6 +20,8 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 #include <math.h>
 #include "player.h"
 
+const Vector3f Vaxis(0.0f, 1.0f, 0.0f);
+
 void Player::OnJoystick(Vector2f l, Vector2f r) {
   if (l.x != 0.f || l.y != 0.f) {
     Vector2f orig(0.f, 1.f);
@@ -29,20 +31,17 @@ void Player::OnJoystick(Vector2f l, Vector2f r) {
     f_ = angle - camera_->GetAngleH() - 90;
   }
   // Moving speed
-  m_pm.x = -l.x;
+  m_pm.x = -l.x * PLAYER_SPEED;
   m_pm.y = 1.;
-  m_pm.z = l.y;
+  m_pm.z = l.y * PLAYER_SPEED;
+  // We consider (0, 1, 0) as the origin
+  m_pm.Rotate(camera_->GetAngleH() + 90, Vaxis);
 }
 
 Vector3f Player::NextPosition(void) {
   Vector3f np(0, 0, 0);
-  const Vector3f Vaxis(0.0f, 1.0f, 0.0f);
-  // Position move
-  Vector3f pm = m_pm;
-  // We consider (0, 1, 0) as the origin
-  pm.Rotate(camera_->GetAngleH() + 90, Vaxis);
-  np.x = x_ + pm.x / 10;
-  np.z = z_ + pm.z / 10;
+  np.x = x_ + m_pm.x;
+  np.z = z_ + m_pm.z;
   np.y = y_;
   return np;
 }

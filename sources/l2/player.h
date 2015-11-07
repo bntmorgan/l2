@@ -25,14 +25,16 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 #include "texture.h"
 #include "camera.h"
 
+#define PLAYER_SPEED 0.10
+
 class Player: public AABB, public TCube {
  private:
-   // Facing
-   float f_;
-   // Camera
-   Camera *camera_;
-   // Moving speed
-   Vector3f m_pm;
+  // Facing
+  float f_;
+  // Camera
+  Camera *camera_;
+  // Moving speed
+  Vector3f m_pm;
  public:
   Player(float x, float y, float z, Texture *t, Camera *c) : AABB(x, y, z),
       TCube(t), f_(0), camera_(c), m_pm(0, 0, 0) { };
@@ -40,6 +42,8 @@ class Player: public AABB, public TCube {
   void OnJoystick(Vector2f l, Vector2f r);
   void Update(void);
   float f(void) { return f_; }
+  Vector3f pm(void) { return m_pm; }
+  void set_pm(Vector3f pm) { m_pm = pm; }
 };
 
 #endif//__PLAYER_H__

@@ -1,6 +1,7 @@
 /*
 
    Copyright 2010 Etay Meiri
+   Copyright 2015 Benoît Morgan
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -14,7 +15,7 @@
 
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-   */
+*/
 
 #include "camera.h"
 #include "keys.h"
@@ -35,7 +36,7 @@ Camera::Camera(int WindowWidth, int WindowHeight) {
   m_rh = 0;
   m_rv = 0;
   // Position speeds
-  m_pm = Vector3f(0.f, 0.f, 0.f);
+//  m_pm = Vector3f(0.f, 0.f, 0.f);
 
   Init();
 
@@ -226,19 +227,19 @@ void Camera::Update() {
   m_up.Normalize();
 
   // Position move
-  Vector3f pm = m_pm;
+//  Vector3f pm = m_pm;
   // printf("pos (%f, %f, %f)\n", m_pos.x, m_pos.y, m_pos.z);
   // XXX ? WTF
-  pm.Rotate(m_AngleH + 90, Vaxis);
-  m_pos.x += pm.x / 10;
-  m_pos.z += pm.z / 10;
+//  pm.Rotate(m_AngleH + 90, Vaxis);
+//  m_pos.x += pm.x / 10;
+//  m_pos.z += pm.z / 10;
 }
 
 void Camera::OnJoystick(Vector2f l, Vector2f r) {
   m_rh = r.x;
   m_rv = r.y;
-  m_pm.x = -l.x;
-  m_pm.y = 1.;
-  m_pm.z = l.y;
+//  m_pm.x = -l.x;
+//  m_pm.y = 1.;
+//  m_pm.z = l.y;
   // printf("l(%f, %f), r(%f, %f)\n", l.x, l.y, r.x, r.y);
 }

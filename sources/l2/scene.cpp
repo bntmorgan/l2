@@ -27,6 +27,8 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <math.h>
+#include <cmath>
+#include <float.h>
 #include "ccube.h"
 
 const char* filename_vs_tcube = "sources/l2/shaders/tcube.vs";
@@ -73,7 +75,7 @@ void Scene::CompileShaders() {
 /**
  * XXX Scene test function
  */
-#define CUBES_NB 5
+#define CUBES_NB 6
 Scene *Scene::CreateTestScene(void) {
   Scene *s = new Scene;
   int i, j;
@@ -103,6 +105,12 @@ Scene *Scene::CreateTestScene(void) {
       }
     }
   }
+
+
+  s->AddCube(new Object(new AABB(3,  1,  3),
+        new TCube(ts->texture("ROCKS"))));
+  s->AddCube(new Object(new AABB(1,  1,  3),
+        new TCube(ts->texture("ROCKS"))));
 
   // Perspective
   s->g_pers_proj_info()->FOV = 0.0f;
@@ -146,10 +154,21 @@ void Scene::AddCube(Object *c) {
   cubes_.push_back(c);
 }
 
+Vector3f Min3(float x, float y, float z) {
+  float ax = std::abs(x), ay = std::abs(y), az = std::abs(z);
+  if (ax < ay && ax < az) {
+    return Vector3f(x, 0, 0);
+  } else if (ay < ax && ay < az) {
+    return Vector3f(0, y, 0);
+  }
+  return Vector3f(0, 0, z);
+}
+
 void Scene::Physics(void) {
   static std::vector<Object*> res;
   unsigned int i;
   TCube *c;
+  AABB *cb; // collided box
   for (i = 0; i < res.size(); i++) {
     c = (TCube *)res[i]->g();
     c->set_collided(false);
@@ -157,6 +176,7 @@ void Scene::Physics(void) {
   res.clear();
   // Test search fonction
   // Create AABB Player movement box
+  player_->set_pm(original_pm_);
   Vector3f np = player_->NextPosition();
   AABB *eb = move_box_->b();
   AABB npb(np.x, np.y, np.z, player_->w(), player_->h(),
@@ -166,6 +186,23 @@ void Scene::Physics(void) {
   for (i = 0; i < res.size(); i++) {
     c = (TCube *)res[i]->g();
     c->set_collided(true);
+    cb = res[i]->b();
+    if (npb.Collide(cb)) {
+      // Computing the new speed vector from the collided boxes
+      float delta_x = (cb->x() + cb->w()) - (npb.x() + npb.w());
+      delta_x = (delta_x > 0) ? delta_x - cb->w() : delta_x + cb->w();
+      float delta_y = (cb->y() + cb->h()) - (npb.y() + npb.h());
+      delta_y = (delta_y > 0) ? delta_y - cb->h() : delta_y + cb->h();
+      float delta_z = (cb->z() + cb->d()) - (npb.z() + npb.d());
+      delta_z = (delta_z > 0) ? delta_z - cb->d() : delta_z + cb->d();
+      Vector3f d = Min3(delta_x, delta_y, delta_z);
+      player_->set_pm(player_->pm() + d);
+      // Update motion vector and new box position for the next collided box
+      np = player_->NextPosition();
+      npb.set_x(np.x);
+      npb.set_y(np.y);
+      npb.set_z(np.z);
+    }
   }
 }
 
@@ -174,11 +211,17 @@ void Scene::Render(void) {
   TCube *tc;
   CCube *cc;
   AABB *b;
+  Vector3f p_pos;
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  camera_.OnRender();
   player_->Update();
+  // Set the camera position : It follows the player...
+  p_pos.x = player_->x();
+  p_pos.y = player_->y();
+  p_pos.z = player_->z();
+  camera_.set_pos(&p_pos);
+  camera_.OnRender();
 
   // Camera and perspective
   p_.SetCamera(camera_);
@@ -288,4 +331,5 @@ void Scene::OnJoystickAxis(Vector2f l, Vector2f r) {
   r_ = r;
   camera_.OnJoystick(l_, r_);
   player_->OnJoystick(l_, r_);
+  original_pm_ = player_->pm();
 }
