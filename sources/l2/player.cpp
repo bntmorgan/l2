@@ -22,6 +22,13 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 
 const Vector3f Vaxis(0.0f, 1.0f, 0.0f);
 
+float Player::JumpModel(int t) {
+  float v;
+  t -= 30;
+  v = (-(t * t / 2.0) + 450) / 9000;
+  return (v > PLAYER_WEIGHT_MAX) ? v : PLAYER_WEIGHT_MAX;
+}
+
 void Player::OnJoystick(Vector2f l, Vector2f r) {
   if (l.x != 0.f || l.y != 0.f) {
     Vector2f orig(0.f, 1.f);
@@ -41,13 +48,28 @@ void Player::OnJoystick(Vector2f l, Vector2f r) {
 Vector3f Player::NextPosition(void) {
   Vector3f np(0, 0, 0);
   np.x = x_ + m_pm.x;
+  np.y = y_ + m_pm.y + weight_.y;
   np.z = z_ + m_pm.z;
-  np.y = y_;
   return np;
 }
 
+void Player::Jump(void) {
+  jumping_ = true;
+  jump_t_ = 0;
+}
+
 void Player::Update(void) {
+  // We need to change player's weight according to jump model
+  if (jumping_) {
+    weight_.y = JumpModel(jump_t_);
+    // printf("New weight ! %.3f\n", weight_.y);
+    jump_t_++;
+    if (weight_.y <= PLAYER_WEIGHT_MAX) {
+      jumping_ = false;
+    }
+  }
   Vector3f np = NextPosition();
   x_ = np.x;
+  y_ = np.y;
   z_ = np.z;
 }

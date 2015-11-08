@@ -106,6 +106,7 @@ class Gamepad {
     int event(void) { return event_; }
     Vector2f r(void) { return r_;}
     Vector2f l(void) { return l_;}
+    int a(void) { return a_; }
 };
 
 #endif//__GAMEPAD_H__

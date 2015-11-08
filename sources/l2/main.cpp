@@ -89,9 +89,11 @@ static void RenderSceneCB(void) {
     g->Update();
     int event = g->event();
     g->Clear();
-    if (event == JS_EVENT_AXIS) {
-      // g->Dump();
-      s->OnJoystickAxis(g->l(), g->r());
+    if (event & JS_EVENT_AXIS) {
+      s->OnJoystickAxis(g, g->l(), g->r());
+    }
+    if (event & JS_EVENT_BUTTON) {
+      s->OnJoystickButton(g);
     }
   }
   s->Physics();
@@ -137,7 +139,7 @@ static void SpecialKeyboardCB(int Key, int x, int y) {
   Vector2f l(kb_h, kb_v);
   norm_to_one(&l);
   Vector2f r(0., 0.);
-  s->OnJoystickAxis(l, r);
+  s->OnJoystickAxis(g, l, r);
 }
 
 static void SpecialKeyboardUpCB(int Key, int x, int y) {
@@ -160,7 +162,7 @@ static void SpecialKeyboardUpCB(int Key, int x, int y) {
   Vector2f l(kb_h, kb_v);
   norm_to_one(&l);
   Vector2f r(0., 0.);
-  s->OnJoystickAxis(l, r);
+  s->OnJoystickAxis(g, l, r);
 }
 
 static void KeyboardCB(unsigned char Key, int x, int y) {
@@ -211,8 +213,8 @@ int main(int argc, char *argv[]) {
   glCullFace(GL_BACK);
   glEnable(GL_CULL_FACE);
 
-  glEnable (GL_BLEND);
-  glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glEnable(GL_BLEND);
+  // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   // Must be done after glut is initialized!
   GLenum res = glewInit();

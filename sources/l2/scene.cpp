@@ -45,7 +45,7 @@ Scene::Scene(void) : camera_(Camera(WINDOW_WIDTH, WINDOW_HEIGHT)) {
   // Textures
   textures_ = new Textures;
   // Player
-  player_ = new Player(0,  1,  0, textures_->texture("PLAYER"), &camera_);
+  player_ = new Player(0,  5,  0, textures_->texture("PLAYER"), &camera_);
   Graphic::InitGL();
   display_collider_ = false;
   display_collider_search_ = false;
@@ -106,10 +106,18 @@ Scene *Scene::CreateTestScene(void) {
     }
   }
 
-
+  // Stairs
   s->AddCube(new Object(new AABB(3,  1,  3),
         new TCube(ts->texture("ROCKS"))));
   s->AddCube(new Object(new AABB(1,  1,  3),
+        new TCube(ts->texture("ROCKS"))));
+  s->AddCube(new Object(new AABB(0,  2,  3),
+        new TCube(ts->texture("ROCKS"))));
+  s->AddCube(new Object(new AABB(-1,  3,  3),
+        new TCube(ts->texture("ROCKS"))));
+  s->AddCube(new Object(new AABB(-1,  4,  2),
+        new TCube(ts->texture("ROCKS"))));
+  s->AddCube(new Object(new AABB(-1,  5,  1),
         new TCube(ts->texture("ROCKS"))));
 
   // Perspective
@@ -133,6 +141,9 @@ void Scene::OnKeyboard(int key) {
   }
   if (key == OGLDEV_KEY_s) {
     display_collider_search_ = !display_collider_search_;
+  }
+  if (key == OGLDEV_KEY_SPACE) {
+    player_->Jump();
   }
   if (key == OGLDEV_KEY_q) {
     exit(0);
@@ -169,12 +180,7 @@ void Scene::Physics(void) {
   bool swap = true;
   Object *t;
   int i;
-  TCube *c;
   AABB *cb, *cb1; // collided box
-  for (i = 0; i < res.size(); i++) {
-    c = (TCube *)res[i]->g();
-    c->set_collided(false);
-  }
   res.clear();
   // XXX : Recover the motion given by the joystick
   player_->set_pm(original_pm_);
@@ -204,8 +210,6 @@ void Scene::Physics(void) {
     }
   }
   for (i = 0; i < res.size(); i++) {
-    c = (TCube *)res[i]->g();
-    c->set_collided(true);
     cb = res[i]->b();
     if (npb.Collide(cb)) {
       // Computing the new speed vector from the collided boxes
@@ -346,10 +350,16 @@ void Scene::Dump(void) {
   }
 }
 
-void Scene::OnJoystickAxis(Vector2f l, Vector2f r) {
+void Scene::OnJoystickAxis(Gamepad *g, Vector2f l, Vector2f r) {
   l_ = l;
   r_ = r;
   camera_.OnJoystick(l_, r_);
   player_->OnJoystick(l_, r_);
   original_pm_ = player_->pm();
+}
+
+void Scene::OnJoystickButton(Gamepad *g) {
+  if (g->a()) {
+    player_->Jump();
+  }
 }

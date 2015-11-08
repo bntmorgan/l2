@@ -34,6 +34,7 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 #include "shader.h"
 #include "shader_tcube.h"
 #include "shader_ccube.h"
+#include "gamepad.h"
 
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 720
@@ -80,7 +81,8 @@ class Scene {
   void OnKeyboard(int key);
   void OnMouse(int x, int y);
   void OnReshape(int x, int y);
-  void OnJoystickAxis(Vector2f l, Vector2f r);
+  void OnJoystickAxis(Gamepad *g, Vector2f l, Vector2f r);
+  void OnJoystickButton(Gamepad *g);
   void CreateAABBTree(void);
   // Accessors
   PersProjInfo *g_pers_proj_info(void) { return &g_pers_proj_info_; }
