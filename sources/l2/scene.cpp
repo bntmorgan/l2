@@ -209,6 +209,7 @@ void Scene::Physics(void) {
       }
     }
   }
+  // XXX Replace this by Ray tracing
   for (i = 0; i < res.size(); i++) {
     cb = res[i]->b();
     if (npb.Collide(cb)) {

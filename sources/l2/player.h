@@ -26,7 +26,7 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 #include "camera.h"
 
 #define PLAYER_SPEED 0.10
-#define PLAYER_WEIGHT_MAX -0.4f
+#define PLAYER_WEIGHT_MAX -0.2f
 
 class Player: public AABB, public TCube {
  private:
@@ -47,6 +47,8 @@ class Player: public AABB, public TCube {
       TCube(t), f_(0), camera_(c), m_pm(0, 0, 0), weight_(0, PLAYER_WEIGHT_MAX, 0),
       jumping_(false) { };
   Vector3f NextPosition(void);
+  Vector3f NextPositionMove(void);
+  Vector3f NextPositionWeight(void);
   void OnJoystick(Vector2f l, Vector2f r);
   void Update(void);
   void Jump(void);

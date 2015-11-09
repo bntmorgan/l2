@@ -24,8 +24,8 @@ const Vector3f Vaxis(0.0f, 1.0f, 0.0f);
 
 float Player::JumpModel(int t) {
   float v;
-  t -= 30;
-  v = (-(t * t / 2.0) + 450) / 9000;
+  t -= 0;
+  v = (-(t * t * 4.0) + 1000) / 14000;
   return (v > PLAYER_WEIGHT_MAX) ? v : PLAYER_WEIGHT_MAX;
 }
 
@@ -50,6 +50,20 @@ Vector3f Player::NextPosition(void) {
   np.x = x_ + m_pm.x;
   np.y = y_ + m_pm.y + weight_.y;
   np.z = z_ + m_pm.z;
+  return np;
+}
+
+Vector3f Player::NextPositionMove(void) {
+  Vector3f np(0, 0, 0);
+  np.x = x_ + m_pm.x;
+  np.y = y_ + m_pm.y;
+  np.z = z_ + m_pm.z;
+  return np;
+}
+
+Vector3f Player::NextPositionWeight(void) {
+  Vector3f np(0, 0, 0);
+  np.y = y_ + weight_.y;
   return np;
 }
 
