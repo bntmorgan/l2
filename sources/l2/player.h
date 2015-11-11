@@ -42,10 +42,11 @@ class Player: public AABB, public TCube {
   // Jump Model
   float JumpModel(int t);
   bool jumping_;
+  bool grounded_;
  public:
   Player(float x, float y, float z, Texture *t, Camera *c) : AABB(x, y, z),
       TCube(t), f_(0), camera_(c), m_pm(0, 0, 0), weight_(0, PLAYER_WEIGHT_MAX, 0),
-      jumping_(false) { };
+      jumping_(false), grounded_(false) { };
   Vector3f NextPosition(void);
   Vector3f NextPositionMove(void);
   Vector3f NextPositionWeight(void);
@@ -59,6 +60,8 @@ class Player: public AABB, public TCube {
   void set_pm(Vector3f pm) { m_pm = pm; }
   Vector3f weight(void) { return weight_; }
   void set_weight(Vector3f weight) { weight_ = weight; }
+  bool grounded(void) { return grounded_; }
+  void set_grounded(bool grounded) { grounded_ = grounded; }
 };
 
 #endif//__PLAYER_H__

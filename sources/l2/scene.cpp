@@ -178,6 +178,7 @@ Vector3f Min3(float x, float y, float z) {
 void Scene::Physics(void) {
   static std::vector<Object*> res;
   bool swap = true;
+  static bool tg = false;
   Object *t;
   int i;
   AABB *cb, *cb1; // collided box
@@ -210,6 +211,7 @@ void Scene::Physics(void) {
     }
   }
   // XXX Replace this by Ray tracing
+  tg = false;
   for (i = 0; i < res.size(); i++) {
     cb = res[i]->b();
     if (npb.Collide(cb)) {
@@ -221,6 +223,9 @@ void Scene::Physics(void) {
       float delta_z = (cb->z() + cb->d()) - (npb.z() + npb.d());
       delta_z = (delta_z > 0) ? delta_z - cb->d() : delta_z + cb->d();
       Vector3f d = Min3(delta_x, delta_y, delta_z);
+      if (std::abs(d.y) > 0.0) {
+        tg = true;
+      }
       player_->set_pm(player_->pm() + d);
       // Update motion vector and new box position for the next collided box
       np = player_->NextPosition();
@@ -228,6 +233,11 @@ void Scene::Physics(void) {
       npb.set_y(np.y);
       npb.set_z(np.z);
     }
+  }
+  if (!player_->grounded() && tg) {
+    player_->set_grounded(true);
+  } else if (player_->grounded() && !tg) {
+    player_->set_grounded(false);
   }
 }
 
