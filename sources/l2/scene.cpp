@@ -108,17 +108,17 @@ Scene *Scene::CreateTestScene(void) {
 
   // Stairs
   s->AddCube(new Object(new AABB(3,  1,  3),
-        new TCube(ts->texture("ROCKS"))));
+        new TCube(ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP"))));
   s->AddCube(new Object(new AABB(1,  1,  3),
-        new TCube(ts->texture("ROCKS"))));
+        new TCube(ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP"))));
   s->AddCube(new Object(new AABB(0,  2,  3),
-        new TCube(ts->texture("ROCKS"))));
+        new TCube(ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP"))));
   s->AddCube(new Object(new AABB(-1,  3,  3),
-        new TCube(ts->texture("ROCKS"))));
+        new TCube(ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP"))));
   s->AddCube(new Object(new AABB(-1,  4,  2),
-        new TCube(ts->texture("ROCKS"))));
+        new TCube(ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP"))));
   s->AddCube(new Object(new AABB(-1,  5,  1),
-        new TCube(ts->texture("ROCKS"))));
+        new TCube(ts->texture("DIRT_SIDE"), ts->texture("DIRT_TOP"))));
 
   // Perspective
   s->g_pers_proj_info()->FOV = 0.0f;
