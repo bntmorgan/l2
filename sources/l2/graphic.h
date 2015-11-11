@@ -25,16 +25,11 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "math_3d.h"
 
-struct Vertex {
-    Vector3f m_pos;
-    Vector2f m_tex;
+struct Vertex2 {
+  Vector3f pos;
+  Vector2f tex;
+};
 
-    Vertex() {}
-
-    Vertex(Vector3f pos, Vector2f tex) {
-        m_pos = pos;
-        m_tex = tex;
-    }
 };
 
 class Graphic {
@@ -42,7 +37,7 @@ class Graphic {
   virtual void Draw(void) = 0;
   virtual ~Graphic(void) {};
   // GL
-  static Vertex cube_vertices_[];
+  static Vertex2 cube_vertices_[];
   static Vector3f ccube_vertices_[];
   static unsigned int cube_indices_[];
   static GLuint cube_vbo_;

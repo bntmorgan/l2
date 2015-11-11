@@ -19,31 +19,31 @@ along with L2.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "graphic.h"
 
-Vertex Graphic::cube_vertices_[] = {
-  Vertex(Vector3f(-0.5f,-0.5f,0.5f), Vector2f(0.0,1.0)),
-  Vertex(Vector3f(0.5f,-0.5f,0.5f), Vector2f(1.0,1.0)),
-  Vertex(Vector3f(0.5f,0.5f,0.5f), Vector2f(1.0,0.0)),
-  Vertex(Vector3f(-0.5f,0.5f,0.5f), Vector2f(0.0,0.0)),
-  Vertex(Vector3f(-0.5f,0.5f,-0.5f), Vector2f(0.0,0.0)),
-  Vertex(Vector3f(0.5f,0.5f,-0.5f), Vector2f(1.0,0.0)),
-  Vertex(Vector3f(0.5f,-0.5f,-0.5f), Vector2f(1.0,1.0)),
-  Vertex(Vector3f(-0.5f,-0.5f,-0.5f), Vector2f(0.0,1.0)),
-  Vertex(Vector3f(0.5f,-0.5f,0.5f), Vector2f(0.0,1.0)),
-  Vertex(Vector3f(0.5f,-0.5f,-0.5f), Vector2f(1.0,1.0)),
-  Vertex(Vector3f(0.5f,0.5f,-0.5f), Vector2f(1.0,0.0)),
-  Vertex(Vector3f(0.5f,0.5f,0.5f), Vector2f(0.0,0.0)),
-  Vertex(Vector3f(-0.5f,-0.5f,-0.5f), Vector2f(0.0,1.0)),
-  Vertex(Vector3f(-0.5f,-0.5f,0.5f), Vector2f(1.0,1.0)),
-  Vertex(Vector3f(-0.5f,0.5f,0.5f), Vector2f(1.0,0.0)),
-  Vertex(Vector3f(-0.5f,0.5f,-0.5f), Vector2f(0.0,0.0)),
-  Vertex(Vector3f(-0.5f,0.5f,0.5f), Vector2f(0.0,1.0)),
-  Vertex(Vector3f(0.5f,0.5f,0.5f), Vector2f(1.0,1.0)),
-  Vertex(Vector3f(0.5f,0.5f,-0.5f), Vector2f(1.0,0.0)),
-  Vertex(Vector3f(-0.5f,0.5f,-0.5f), Vector2f(0.0,0.0)),
-  Vertex(Vector3f(-0.5f,-0.5f,-0.5f), Vector2f(0.0,1.0)),
-  Vertex(Vector3f(0.5f,-0.5f,-0.5f), Vector2f(1.0,1.0)),
-  Vertex(Vector3f(0.5f,-0.5f,0.5f), Vector2f(1.0,0.0)),
-  Vertex(Vector3f(-0.5f,-0.5f,0.5f), Vector2f(0.0,0.0))
+Vertex2 Graphic::cube_vertices_[] = {
+  {.pos = Vector3f(-0.5f,-0.5f,0.5f), .tex = Vector2f(0.0,1.0)},
+  {.pos = Vector3f(0.5f,-0.5f,0.5f), .tex = Vector2f(1.0,1.0)},
+  {.pos = Vector3f(0.5f,0.5f,0.5f), .tex = Vector2f(1.0,0.0)},
+  {.pos = Vector3f(-0.5f,0.5f,0.5f), .tex = Vector2f(0.0,0.0)},
+  {.pos = Vector3f(-0.5f,0.5f,-0.5f), .tex = Vector2f(0.0,0.0)},
+  {.pos = Vector3f(0.5f,0.5f,-0.5f), .tex = Vector2f(1.0,0.0)},
+  {.pos = Vector3f(0.5f,-0.5f,-0.5f), .tex = Vector2f(1.0,1.0)},
+  {.pos = Vector3f(-0.5f,-0.5f,-0.5f), .tex = Vector2f(0.0,1.0)},
+  {.pos = Vector3f(0.5f,-0.5f,0.5f), .tex = Vector2f(0.0,1.0)},
+  {.pos = Vector3f(0.5f,-0.5f,-0.5f), .tex = Vector2f(1.0,1.0)},
+  {.pos = Vector3f(0.5f,0.5f,-0.5f), .tex = Vector2f(1.0,0.0)},
+  {.pos = Vector3f(0.5f,0.5f,0.5f), .tex = Vector2f(0.0,0.0)},
+  {.pos = Vector3f(-0.5f,-0.5f,-0.5f), .tex = Vector2f(0.0,1.0)},
+  {.pos = Vector3f(-0.5f,-0.5f,0.5f), .tex = Vector2f(1.0,1.0)},
+  {.pos = Vector3f(-0.5f,0.5f,0.5f), .tex = Vector2f(1.0,0.0)},
+  {.pos = Vector3f(-0.5f,0.5f,-0.5f), .tex = Vector2f(0.0,0.0)},
+  {.pos = Vector3f(-0.5f,0.5f,0.5f), .tex = Vector2f(0.0,1.0)},
+  {.pos = Vector3f(0.5f,0.5f,0.5f), .tex = Vector2f(1.0,1.0)},
+  {.pos = Vector3f(0.5f,0.5f,-0.5f), .tex = Vector2f(1.0,0.0)},
+  {.pos = Vector3f(-0.5f,0.5f,-0.5f), .tex = Vector2f(0.0,0.0)},
+  {.pos = Vector3f(-0.5f,-0.5f,-0.5f), .tex = Vector2f(0.0,1.0)},
+  {.pos = Vector3f(0.5f,-0.5f,-0.5f), .tex = Vector2f(1.0,1.0)},
+  {.pos = Vector3f(0.5f,-0.5f,0.5f), .tex = Vector2f(1.0,0.0)},
+  {.pos = Vector3f(-0.5f,-0.5f,0.5f), .tex = Vector2f(0.0,0.0)}
 };
 
 unsigned int Graphic::cube_indices_[] = {
